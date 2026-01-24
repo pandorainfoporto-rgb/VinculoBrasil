@@ -1,0 +1,138 @@
+Mcp name: "GoogleDocs"
+Mcp id: "686de33a6fd1cae1afbb55b4"
+Mcp url: "https://backend.composio.dev/v3/mcp/ec0e99e9-94b9-49dd-b136-a8a062279c21/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: GOOGLEDOCS_COPY_DOCUMENT
+
+Here is the input and output schema info of Tool GOOGLEDOCS_COPY_DOCUMENT of Mcp GoogleDocs (Mcp Id: 686de33a6fd1cae1afbb55b4):
+inputSchema:
+{"type":"object","properties":{"document_id":{"type":"string","description":"The ID of the Google Document to be copied.","title":"Document Id","examples":["1a2b3c-example-document-id"]},"title":{"type":"string","description":"The title for the new copied document. If not provided, the title will be 'Copy of [original document's title]'.","title":"Title","default":null,"nullable":true,"examples":["My New Document Title"]}},"required":["document_id"],"title":"CopyDocumentRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"documentId":{"type":"string","description":"The ID of the newly created copied document.","title":"Document Id"},"title":{"type":"string","description":"The title of the newly created copied document.","title":"Title"}},"required":["documentId","title"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"CopyDocumentResponseWrapper"}
+schema info of GOOGLEDOCS_COPY_DOCUMENT ends.
+
+
+Mcp name: "GoogleDocs"
+Mcp id: "686de33a6fd1cae1afbb55b4"
+Mcp url: "https://backend.composio.dev/v3/mcp/ec0e99e9-94b9-49dd-b136-a8a062279c21/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: GOOGLEDOCS_CREATE_DOCUMENT
+
+Here is the input and output schema info of Tool GOOGLEDOCS_CREATE_DOCUMENT of Mcp GoogleDocs (Mcp Id: 686de33a6fd1cae1afbb55b4):
+inputSchema:
+{"type":"object","properties":{"text":{"type":"string","description":"Initial text content to insert at the beginning of the new document.","title":"Text","examples":["This document outlines the key findings...","## Agenda\n1. Welcome\n2. Presentation\n3. Q&A","Start of the report."]},"title":{"type":"string","description":"Title for the new document, used as its filename in Google Drive.","title":"Title","examples":["Quarterly Business Review","Project Alpha - Brainstorming Notes","My Vacation Itinerary"]}},"required":["title","text"],"title":"CreateDocumentRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"document_id":{"type":"string","description":"Unique ID of the newly created document, required for subsequent operations.","title":"Document Id","default":null,"nullable":true},"response_data":{"type":"object","description":"Detailed API response metadata about the created document (e.g., title, revision ID), excluding the document's body content.","title":"Response Data","default":null,"nullable":true,"additionalProperties":true}},"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"CreateDocumentResponseWrapper"}
+schema info of GOOGLEDOCS_CREATE_DOCUMENT ends.
+
+
+Mcp name: "GoogleDocs"
+Mcp id: "686de33a6fd1cae1afbb55b4"
+Mcp url: "https://backend.composio.dev/v3/mcp/ec0e99e9-94b9-49dd-b136-a8a062279c21/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: GOOGLEDOCS_CREATE_DOCUMENT_MARKDOWN
+
+Here is the input and output schema info of Tool GOOGLEDOCS_CREATE_DOCUMENT_MARKDOWN of Mcp GoogleDocs (Mcp Id: 686de33a6fd1cae1afbb55b4):
+inputSchema:
+{"type":"object","properties":{"markdown_text":{"type":"string","description":"The initial content for the document, formatted as Markdown. Supports various Markdown elements including headings, lists (nested lists are not supported), tables, images (via publicly accessible URLs), blockquotes, code blocks, and text formatting (bold, italic, etc.). If an empty string is provided, the document will be created with only the title.","title":"Markdown Text"},"title":{"type":"string","description":"The title for the new Google Docs document.","title":"Title","examples":["Meeting Notes Q3","Project Alpha Proposal","My New Story Draft"]}},"required":["title","markdown_text"],"title":"CreateDocumentMarkdownRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"document_id":{"type":"string","description":"The unique identifier of the newly created Google Docs document.","title":"Document Id","default":null,"nullable":true},"request_data":{"type":"array","description":"Google Docs API request objects generated from `markdown_text` for `batchUpdate`; null or empty if `markdown_text` was not provided or empty.","title":"Request Data","default":null,"nullable":true,"items":{"type":"object","properties":{},"additionalProperties":true}},"response_data":{"type":"object","description":"JSON response from Google Docs API after initial document creation with title, before Markdown content is applied.","title":"Response Data","default":null,"nullable":true,"additionalProperties":true}},"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"CreateDocumentMarkdownResponseWrapper"}
+schema info of GOOGLEDOCS_CREATE_DOCUMENT_MARKDOWN ends.
+
+
+Mcp name: "GoogleDocs"
+Mcp id: "686de33a6fd1cae1afbb55b4"
+Mcp url: "https://backend.composio.dev/v3/mcp/ec0e99e9-94b9-49dd-b136-a8a062279c21/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: GOOGLEDOCS_CREATE_FOOTER
+
+Here is the input and output schema info of Tool GOOGLEDOCS_CREATE_FOOTER of Mcp GoogleDocs (Mcp Id: 686de33a6fd1cae1afbb55b4):
+inputSchema:
+{"type":"object","properties":{"document_id":{"type":"string","description":"The ID of the document to create the footer in.","title":"Document Id","examples":["12345abcdef"]},"section_break_location":{"type":"object","description":"The location of the SectionBreak immediately preceding the section whose SectionStyle this footer should belong to. If this is unset or refers to the first section break in the document, the footer applies to the document style.","title":"Location","default":null,"nullable":true,"properties":{"index":{"type":"integer","description":"The zero-based index, in UTF-16 code units, relative to the beginning of the segment.","title":"Index","default":null,"nullable":true},"segmentId":{"type":"string","description":"The ID of the header, footer or footnote the location is in. An empty segment ID signifies the document's body.","title":"Segment Id","default":null,"nullable":true},"tabId":{"type":"string","description":"The tab that the location is in. When omitted, the request is applied to the first tab.","title":"Tab Id","default":null,"nullable":true}},"additionalProperties":false},"type":{"type":"string","description":"The type of footer to create.","title":"Type","enum":["HEADER_FOOTER_TYPE_UNSPECIFIED","DEFAULT"],"examples":["DEFAULT"]}},"required":["document_id","type"],"title":"CreateFooterRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"document_id":{"type":"string","description":"The ID of the document the footer was created in.","title":"Document Id"},"footer_id":{"type":"string","description":"The ID of the created footer.","title":"Footer Id"}},"required":["footer_id","document_id"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"CreateFooterResponseWrapper"}
+schema info of GOOGLEDOCS_CREATE_FOOTER ends.
+
+
+Mcp name: "GoogleDocs"
+Mcp id: "686de33a6fd1cae1afbb55b4"
+Mcp url: "https://backend.composio.dev/v3/mcp/ec0e99e9-94b9-49dd-b136-a8a062279c21/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: GOOGLEDOCS_CREATE_FOOTNOTE
+
+Here is the input and output schema info of Tool GOOGLEDOCS_CREATE_FOOTNOTE of Mcp GoogleDocs (Mcp Id: 686de33a6fd1cae1afbb55b4):
+inputSchema:
+{"type":"object","properties":{"documentId":{"type":"string","description":"The ID of the document to create the footnote in.","title":"Document Id","examples":["1a2b3c4d5e6f7g8h9i0j"]},"endOfSegmentLocation":{"type":"object","description":"Inserts the footnote reference at the end of the document body. The segmentId within this EndOfSegmentLocation object must be empty.","title":"EndOfSegmentLocation","default":null,"nullable":true,"properties":{"segmentId":{"type":"string","description":"The ID of the header, footer or footnote the location is in. An empty segment ID signifies the document's body.","title":"Segment Id","default":null,"nullable":true,"examples":["h.1a2b3c4d5e6f7g8h9i0j"]},"tabId":{"type":"string","description":"The tab that the location is in. When omitted, the request is applied to the first tab.","title":"Tab Id","default":null,"nullable":true,"examples":["t.1a2b3c4d5e6f7g8h9i0j"]}},"additionalProperties":false},"location":{"type":"object","description":"Inserts the footnote reference at a specific index in the document. The segmentId within this Location object must be empty as footnotes can only be inserted in the document body.","title":"Location","default":null,"nullable":true,"properties":{"index":{"type":"integer","description":"The zero-based index, in UTF-16 code units. The index is relative to the beginning of the segment specified by segment_id.","title":"Index","default":null,"nullable":true,"examples":[100]},"segmentId":{"type":"string","description":"The ID of the header, footer or footnote the location is in. An empty segment ID signifies the document's body.","title":"Segment Id","default":null,"nullable":true,"examples":["h.1a2b3c4d5e6f7g8h9i0j"]},"tabId":{"type":"string","description":"The tab that the location is in. When omitted, the request is applied to the first tab.","title":"Tab Id","default":null,"nullable":true,"examples":["t.1a2b3c4d5e6f7g8h9i0j"]}},"additionalProperties":false}},"required":["documentId"],"title":"CreateFootnoteRequestModel"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"documentId":{"type":"string","description":"The ID of the document where the footnote was created.","title":"Document Id","examples":["1a2b3c4d5e6f7g8h9i0j"]},"footnoteId":{"type":"string","description":"The ID of the newly created footnote.","title":"Footnote Id","examples":["f.1a2b3c4d5e6f7g8h9i0j"]}},"required":["footnoteId","documentId"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"CreateFootnoteResponseWrapper"}
+schema info of GOOGLEDOCS_CREATE_FOOTNOTE ends.
+
+
+Mcp name: "GoogleDocs"
+Mcp id: "686de33a6fd1cae1afbb55b4"
+Mcp url: "https://backend.composio.dev/v3/mcp/ec0e99e9-94b9-49dd-b136-a8a062279c21/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: GOOGLEDOCS_CREATE_HEADER
+
+Here is the input and output schema info of Tool GOOGLEDOCS_CREATE_HEADER of Mcp GoogleDocs (Mcp Id: 686de33a6fd1cae1afbb55b4):
+inputSchema:
+{"type":"object","properties":{"createHeader":{"type":"object","description":"The details of the header to create.","title":"Create Header","properties":{"sectionBreakLocation":{"type":"object","description":"The location of the SectionBreak which begins the section this header should belong to.","title":"Location","default":null,"nullable":true,"properties":{"index":{"type":"integer","description":"The zero-based index, in UTF-16 code units.","title":"Index","default":null,"nullable":true},"segmentId":{"type":"string","description":"The ID of the header, footer or footnote the location is in. An empty segment ID signifies the document's body.","title":"Segment Id","default":null,"nullable":true},"tabId":{"type":"string","description":"The tab that the location is in. When omitted, the request is applied to the first tab.","title":"Tab Id","default":null,"nullable":true}},"additionalProperties":false},"type":{"type":"string","description":"The type of header to create.","title":"Type","enum":["HEADER_FOOTER_TYPE_UNSPECIFIED","DEFAULT"]}},"required":["type"],"additionalProperties":false},"documentId":{"type":"string","description":"The ID of the document to create the header in.","title":"Document Id","examples":["12345abcdef"]}},"required":["documentId","createHeader"],"title":"CreateHeaderRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"documentId":{"type":"string","description":"The ID of the document.","title":"Document Id"},"replies":{"type":"array","description":"A list of replies from the batchUpdate request.","title":"Replies","items":{"type":"object","properties":{},"additionalProperties":true}}},"required":["documentId","replies"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"CreateHeaderResponseWrapper"}
+schema info of GOOGLEDOCS_CREATE_HEADER ends.
+
+
+Mcp name: "GoogleDocs"
+Mcp id: "686de33a6fd1cae1afbb55b4"
+Mcp url: "https://backend.composio.dev/v3/mcp/ec0e99e9-94b9-49dd-b136-a8a062279c21/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: GOOGLEDOCS_CREATE_NAMED_RANGE
+
+Here is the input and output schema info of Tool GOOGLEDOCS_CREATE_NAMED_RANGE of Mcp GoogleDocs (Mcp Id: 686de33a6fd1cae1afbb55b4):
+inputSchema:
+{"type":"object","properties":{"documentId":{"type":"string","description":"The ID of the document where the named range will be created.","title":"Document Id","examples":["1aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789_AbCdEf"]},"name":{"type":"string","description":"The name for the new named range. Must be 1-256 characters.","title":"Name","minLength":1,"maxLength":256,"examples":["Chapter1Intro","ImportantSection"]},"rangeEndIndex":{"type":"integer","description":"The zero-based end index of the range.","title":"Range End Index","minimum":0,"examples":[200]},"rangeSegmentId":{"type":"string","description":"Optional. The ID of the header, footer, or footnote. Empty for document body.","title":"Range Segment Id","default":null,"nullable":true,"examples":["h.1a2b3c4d5e6f",""]},"rangeStartIndex":{"type":"integer","description":"The zero-based start index of the range.","title":"Range Start Index","minimum":0,"examples":[100]}},"required":["documentId","name","rangeStartIndex","rangeEndIndex"],"title":"CreateNamedRangeRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"namedRangeId":{"type":"string","description":"The ID of the created named range.","title":"Named Range Id"}},"required":["namedRangeId"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"CreateNamedRangeResponseDataWrapper"}
+schema info of GOOGLEDOCS_CREATE_NAMED_RANGE ends.
+
+
+Mcp name: "GoogleDocs"
+Mcp id: "686de33a6fd1cae1afbb55b4"
+Mcp url: "https://backend.composio.dev/v3/mcp/ec0e99e9-94b9-49dd-b136-a8a062279c21/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: GOOGLEDOCS_CREATE_PARAGRAPH_BULLETS
+
+Here is the input and output schema info of Tool GOOGLEDOCS_CREATE_PARAGRAPH_BULLETS of Mcp GoogleDocs (Mcp Id: 686de33a6fd1cae1afbb55b4):
+inputSchema:
+{"type":"object","properties":{"createParagraphBullets":{"type":"object","title":"Create Paragraph Bullets","properties":{"bulletPreset":{"type":"string","description":"The kinds of bullet glyphs to be used.","title":"Bullet Preset","enum":["BULLET_GLYPH_PRESET_UNSPECIFIED","BULLET_DISC_CIRCLE_SQUARE","BULLET_DIAMONDX_ARROW3D_SQUARE","BULLET_CHECKBOX","BULLET_ARROW_DIAMOND_DISC","BULLET_STAR_CIRCLE_SQUARE","BULLET_ARROW3D_CIRCLE_SQUARE","BULLET_LEFTTRIANGLE_DIAMOND_DISC","BULLET_DIAMONDX_HOLLOWDIAMOND_SQUARE","BULLET_DIAMOND_CIRCLE_SQUARE","NUMBERED_DECIMAL_ALPHA_ROMAN","NUMBERED_DECIMAL_ALPHA_ROMAN_PARENS","NUMBERED_DECIMAL_NESTED","NUMBERED_UPPERALPHA_ALPHA_ROMAN","NUMBERED_UPPERROMAN_UPPERALPHA_DECIMAL","NUMBERED_ZERODECIMAL_ALPHA_ROMAN"],"examples":["BULLET_DISC_CIRCLE_SQUARE"]},"range":{"type":"object","description":"The range to apply the bullet preset to.","title":"Range","properties":{"endIndex":{"type":"integer","description":"The zero-based end index of the range, exclusive.","title":"End Index","examples":[200]},"segmentId":{"type":"string","description":"The ID of the header, footer, or footnote that this range is contained in. An empty segment ID signifies the document's body.","title":"Segment Id","default":null,"nullable":true,"examples":["header_id"]},"startIndex":{"type":"integer","description":"The zero-based start index of the range, inclusive.","title":"Start Index","examples":[100]}},"required":["startIndex","endIndex"],"additionalProperties":false}},"required":["range","bulletPreset"],"additionalProperties":false},"document_id":{"type":"string","description":"The ID of the document to update.","title":"Document Id","examples":["12345abcdef"]}},"required":["document_id","createParagraphBullets"],"title":"CreateParagraphBulletsRequestModel"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"documentId":{"type":"string","description":"The ID of the document that the bullets were added to.","title":"Document Id"},"replies":{"type":"array","description":"The replies to the request. For this action, it should contain one reply.","title":"Replies","items":{"type":"object","properties":{},"additionalProperties":true}}},"required":["documentId","replies"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"CreateParagraphBulletsResponseWrapper"}
+schema info of GOOGLEDOCS_CREATE_PARAGRAPH_BULLETS ends.
+
+
+Mcp name: "GoogleDocs"
+Mcp id: "686de33a6fd1cae1afbb55b4"
+Mcp url: "https://backend.composio.dev/v3/mcp/ec0e99e9-94b9-49dd-b136-a8a062279c21/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: GOOGLEDOCS_DELETE_CONTENT_RANGE
+
+Here is the input and output schema info of Tool GOOGLEDOCS_DELETE_CONTENT_RANGE of Mcp GoogleDocs (Mcp Id: 686de33a6fd1cae1afbb55b4):
+inputSchema:
+{"type":"object","properties":{"document_id":{"type":"string","description":"The ID of the document from which to delete content. This ID can be found in the URL of the Google Doc.","title":"Document Id","examples":["1aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789"]},"range":{"type":"object","description":"The range of content to delete. Deleting text across paragraph boundaries may merge paragraphs and affect styles. Certain deletions can invalidate document structure (e.g., part of a surrogate pair, last newline of critical elements, incomplete deletion of tables/equations).","title":"Range","properties":{"endIndex":{"type":"integer","description":"The zero-based end index of the range, in UTF-16 code units, relative to the beginning of the segment.","title":"End Index","default":null,"nullable":true,"examples":[200]},"segmentId":{"type":"string","description":"The ID of the header, footer, or footnote the range is in. An empty segment ID or omitting this field signifies the document's body.","title":"Segment Id","default":null,"nullable":true,"examples":["h.1a2b3c4d5e6f",""]},"startIndex":{"type":"integer","description":"The zero-based start index of the range, in UTF-16 code units, relative to the beginning of the segment.","title":"Start Index","default":null,"nullable":true,"examples":[100]},"tabId":{"type":"string","description":"The ID of the tab the range is in. When omitted, the request is applied to the first tab. In a document with a single tab, if provided, it must match the singular tab's ID; if omitted, it applies to the singular tab. In a multi-tab document, if provided, it applies to the specified tab; if omitted, it applies to the first tab.","title":"Tab Id","default":null,"nullable":true,"examples":["t.abcdef123456"]}},"additionalProperties":false}},"required":["document_id","range"],"title":"DeleteContentRangeRequestModel"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"documentId":{"type":"string","description":"The ID of the document that the content was deleted from.","title":"Document Id","examples":["1aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789"]},"replies":{"type":"array","description":"A list of replies from the batchUpdate request. For DeleteContentRange, this is typically empty or contains information about the operation's success.","title":"Replies","items":{"type":"object","properties":{},"additionalProperties":true}}},"required":["documentId","replies"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"DeleteContentRangeResponseModelWrapper"}
+schema info of GOOGLEDOCS_DELETE_CONTENT_RANGE ends.
+
+
+Mcp name: "GoogleDocs"
+Mcp id: "686de33a6fd1cae1afbb55b4"
+Mcp url: "https://backend.composio.dev/v3/mcp/ec0e99e9-94b9-49dd-b136-a8a062279c21/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: GOOGLEDOCS_DELETE_FOOTER
+
+Here is the input and output schema info of Tool GOOGLEDOCS_DELETE_FOOTER of Mcp GoogleDocs (Mcp Id: 686de33a6fd1cae1afbb55b4):
+inputSchema:
+{"type":"object","properties":{"document_id":{"type":"string","description":"The ID of the document to delete the footer from.","title":"Document Id","examples":["12345abcdef"]},"footer_id":{"type":"string","description":"The ID of the footer to delete. If this footer is defined on DocumentStyle, the reference to this footer is removed, resulting in no footer of that type for the first section of the document. If this footer is defined on a SectionStyle, the reference to this footer is removed and the footer of that type is now continued from the previous section.","title":"Footer Id","examples":["footer_123"]},"tab_id":{"type":"string","description":"The tab that contains the footer to delete. When omitted, the request is applied to the first tab.","title":"Tab Id","default":null,"nullable":true,"examples":["tab_abc"]}},"required":["document_id","footer_id"],"title":"DeleteFooterRequestModel"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"document_id":{"type":"string","description":"The ID of the document from which the footer was deleted.","title":"Document Id"},"reply":{"type":"object","description":"The response from the Google Docs API. Can be a dict or list of dicts.","title":"Reply","default":null,"nullable":true,"additionalProperties":true}},"required":["document_id"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"DeleteFooterResponseModelWrapper"}
+schema info of GOOGLEDOCS_DELETE_FOOTER ends.

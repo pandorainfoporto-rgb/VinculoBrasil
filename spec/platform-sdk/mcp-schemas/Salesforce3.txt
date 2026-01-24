@@ -1,0 +1,138 @@
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_FETCH_MODIFIED_OR_UNMODIFIED_SOBJECTS
+
+Here is the input and output schema info of Tool SALESFORCE_FETCH_MODIFIED_OR_UNMODIFIED_SOBJECTS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"If-Modified-Since":{"type":"string","description":"Fetch sObjects modified after this RFC3339 datetime string.","title":"If Modified Since","default":null,"nullable":true},"If-Unmodified-Since":{"type":"string","description":"Fetch sObjects unmodified since this RFC3339 datetime string.","title":"If Unmodified Since","default":null,"nullable":true}},"title":"FetchModifiedOrUnmodifiedSobjectsRequest","description":"Request for fetching SObjects; behavior is driven by 'If-Modified-Since' or 'If-Unmodified-Since' HTTP headers."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"FetchModifiedOrUnmodifiedSobjectsResponseWrapper"}
+schema info of SALESFORCE_FETCH_MODIFIED_OR_UNMODIFIED_SOBJECTS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_ACCOUNT
+
+Here is the input and output schema info of Tool SALESFORCE_GET_ACCOUNT of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"account_id":{"type":"string","description":"The Salesforce ID of the account to retrieve.","title":"Account Id","examples":["001Wd00000BSLklIAH","001XXXXXXXXXXXXXXX"]}},"required":["account_id"],"title":"GetAccountRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Full account object from Salesforce including all fields and metadata, or error response.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetAccountResponseWrapper"}
+schema info of SALESFORCE_GET_ACCOUNT ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_CAMPAIGN
+
+Here is the input and output schema info of Tool SALESFORCE_GET_CAMPAIGN of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"campaign_id":{"type":"string","description":"The Salesforce ID of the campaign to retrieve.","title":"Campaign Id","examples":["701Wd00000BVUYAIA5","701XXXXXXXXXXXXXXX"]}},"required":["campaign_id"],"title":"GetCampaignRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Full campaign object from Salesforce including all fields and metadata.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetCampaignResponseWrapper"}
+schema info of SALESFORCE_GET_CAMPAIGN ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_CONTACT
+
+Here is the input and output schema info of Tool SALESFORCE_GET_CONTACT of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"contact_id":{"type":"string","description":"The Salesforce ID of the contact to retrieve.","title":"Contact Id","examples":["003XXXXXXXXXXXXXXX"]}},"required":["contact_id"],"title":"GetContactRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Full contact object from Salesforce including all fields and metadata.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetContactResponseWrapper"}
+schema info of SALESFORCE_GET_CONTACT ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_DASHBOARD
+
+Here is the input and output schema info of Tool SALESFORCE_GET_DASHBOARD of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"dashboard_id":{"type":"string","description":"The Salesforce ID of the dashboard to retrieve.","title":"Dashboard Id","examples":["01ZWd000000XXXXMAQ","01ZXXXXXXXXXXXXXXX"]}},"required":["dashboard_id"],"title":"GetDashboardRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Dashboard metadata including components, layout, filters, and running user information, or error response.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetDashboardResponseWrapper"}
+schema info of SALESFORCE_GET_DASHBOARD ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_LEAD
+
+Here is the input and output schema info of Tool SALESFORCE_GET_LEAD of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"lead_id":{"type":"string","description":"The Salesforce ID of the lead to retrieve.","title":"Lead Id","examples":["00QWd000005V3RmMAK","00QXXXXXXXXXXXXXXX"]}},"required":["lead_id"],"title":"GetLeadRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Full lead object from Salesforce including all fields and metadata.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetLeadResponseWrapper"}
+schema info of SALESFORCE_GET_LEAD ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_NOTE
+
+Here is the input and output schema info of Tool SALESFORCE_GET_NOTE of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"note_id":{"type":"string","description":"The Salesforce ID of the note to retrieve.","title":"Note Id","examples":["002Wd000001UYbaIAG","002XXXXXXXXXXXXXXX"]}},"required":["note_id"],"title":"GetNoteRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Full note object from Salesforce including all fields and metadata, or error response.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetNoteResponseWrapper"}
+schema info of SALESFORCE_GET_NOTE ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_NOTE_BY_ID_WITH_FIELDS
+
+Here is the input and output schema info of Tool SALESFORCE_GET_NOTE_BY_ID_WITH_FIELDS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"fields":{"type":"string","description":"Comma-delimited API names of fields for the Note object (e.g., 'Title,Body'). If omitted, all accessible fields are retrieved.","title":"Fields","default":null,"nullable":true,"examples":["Title,Body","Id,Title,OwnerId,CreatedDate"]},"id":{"type":"string","description":"Unique identifier (ID) of the Note object to retrieve.","title":"Id","examples":["002R0000005hDFYIA2"]}},"required":["id"],"title":"GetNoteByIdWithFieldsRequest","description":"Request schema for retrieving a specific Note object by its ID, with an option to specify the fields to be returned."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"A dictionary containing the fields and values of the retrieved Note object. The structure of this dictionary depends on the 'fields' requested or the default fields for the Note sObject.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetNoteByIdWithFieldsResponseWrapper"}
+schema info of SALESFORCE_GET_NOTE_BY_ID_WITH_FIELDS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_OPPORTUNITY
+
+Here is the input and output schema info of Tool SALESFORCE_GET_OPPORTUNITY of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"opportunity_id":{"type":"string","description":"The Salesforce ID of the opportunity to retrieve.","title":"Opportunity Id","examples":["006Wd000005FG3CIAW","006XXXXXXXXXXXXXXX"]}},"required":["opportunity_id"],"title":"GetOpportunityRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Full opportunity object from Salesforce including all fields and metadata.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetOpportunityResponseWrapper"}
+schema info of SALESFORCE_GET_OPPORTUNITY ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_REPORT
+
+Here is the input and output schema info of Tool SALESFORCE_GET_REPORT of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"report_id":{"type":"string","description":"The Salesforce ID of the report to retrieve metadata for.","title":"Report Id","examples":["00OWd000001GtZ9MAK","00OXXXXXXXXXXXXXXX"]}},"required":["report_id"],"title":"GetReportRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Report metadata including structure, fields, filters, and groupings, or error response.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetReportResponseWrapper"}
+schema info of SALESFORCE_GET_REPORT ends.

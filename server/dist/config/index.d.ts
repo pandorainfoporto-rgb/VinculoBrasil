@@ -1,0 +1,35 @@
+import 'dotenv/config';
+export declare const config: {
+    nodeEnv: string;
+    port: number;
+    host: string;
+    corsOrigin: string;
+    databaseUrl: string;
+    redisUrl: string;
+    jwtSecret: string;
+    jwtExpiresIn: string;
+    jwtRefreshExpiresIn: string;
+    encryptionKey: string;
+    polygonRpcUrl: string;
+    operatorPrivateKey: string;
+    treasuryWallet: string;
+    nftContractAddress: string;
+    vbrzTokenAddress: string;
+    asaasApiKey: string;
+    asaasWalletId: string;
+    asaasSandbox: boolean;
+    transferoClientId: string;
+    transferoClientSecret: string;
+    transferoSandbox: boolean;
+    smtpHost: string;
+    smtpPort: number;
+    smtpUser: string;
+    smtpPass: string;
+    smtpFrom: string;
+    openaiApiKey: string;
+    whatsappSessionPath: string;
+    uploadPath: string;
+    maxFileSize: number;
+    isSetupComplete: boolean;
+};
+//# sourceMappingURL=index.d.ts.map

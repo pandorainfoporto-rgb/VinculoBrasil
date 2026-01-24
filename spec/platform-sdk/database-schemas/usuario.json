@@ -1,0 +1,169 @@
+{
+  "id": "102019b933125777335bd85285538a2bc40",
+  "version": "102019b933125777011b15f1cbf27919f2b",
+  "schema": {
+    "name": "usuario",
+    "description": "Entity representing users in the system",
+    "fields": [
+      {
+        "name": "id",
+        "description": "Unique identifier for the user (user_id)",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System identifier"
+        }
+      },
+      {
+        "name": "data_creator",
+        "description": "id of the user who creates the record",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Audit trail"
+        }
+      },
+      {
+        "name": "data_updater",
+        "description": "id of the user who updates the record",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Audit trail"
+        }
+      },
+      {
+        "name": "create_time",
+        "description": "create time in timestamp unix",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System metadata"
+        },
+        "format": "timestamp"
+      },
+      {
+        "name": "update_time",
+        "description": "update time in timestamp unix",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System metadata"
+        },
+        "format": "timestamp"
+      },
+      {
+        "name": "cpf_cnpj",
+        "description": "Tax identification number (CPF or CNPJ)",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 3,
+          "reason": "PII"
+        },
+        "encryption": true
+      },
+      {
+        "name": "email",
+        "description": "User email address",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 3,
+          "reason": "PII and communication"
+        },
+        "format": "email"
+      },
+      {
+        "name": "wallet_address",
+        "description": "Blockchain wallet address",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Financial data"
+        },
+        "nullable": true
+      },
+      {
+        "name": "perfil",
+        "description": "User profile type",
+        "type": 100,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Public profile categorization"
+        },
+        "enumeration": [
+          {
+            "value": "Unspecified"
+          },
+          {
+            "number": 1,
+            "value": "Locador"
+          },
+          {
+            "number": 2,
+            "value": "Locatario"
+          },
+          {
+            "number": 3,
+            "value": "Admin"
+          }
+        ]
+      }
+    ],
+    "indexes": [
+      {
+        "fields": [
+          "id"
+        ],
+        "unique": true,
+        "primary": true,
+        "order": false
+      },
+      {
+        "fields": [
+          "email"
+        ],
+        "unique": true,
+        "order": false
+      },
+      {
+        "fields": [
+          "cpf_cnpj"
+        ],
+        "unique": true,
+        "order": false
+      },
+      {
+        "fields": [
+          "wallet_address"
+        ],
+        "unique": true,
+        "order": false
+      },
+      {
+        "fields": [
+          "data_creator"
+        ],
+        "order": false
+      },
+      {
+        "fields": [
+          "data_updater"
+        ],
+        "order": false
+      }
+    ]
+  },
+  "task": {
+    "id": "695cf5ec871aac6392e3a5b3",
+    "root": "695cef7bc0662b03161297fc",
+    "project": "695cef7bc0662b03161297fb",
+    "user": "a8911360-1081-700d-f06d-07e3591f1d58"
+  },
+  "namespace": {
+    "id": "01987547fc6c72ecb453bd2736bd4ea0",
+    "tenant": 2,
+    "name": "global-1",
+    "default": true
+  },
+  "revision": 1
+}

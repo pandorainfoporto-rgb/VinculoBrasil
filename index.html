@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+    <!-- Favicon e Icons -->
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-192x192.png" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4F46E5" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Vinculo" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Vinculo" />
+    <meta name="msapplication-TileColor" content="#4F46E5" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- SEO -->
+    <meta
+      name="description"
+      content="A plataforma definitiva para locação, antecipação e investimento imobiliário via Blockchain."
+    />
+    <meta name="keywords" content="aluguel, imoveis, blockchain, NFT, garantia, locacao, brasil, fintech" />
+    <meta name="author" content="Vinculo Brasil" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://vinculobrasil.com.br/" />
+    <meta property="og:title" content="Vinculo Brasil | Ecossistema Imobiliário" />
+    <meta property="og:description" content="A plataforma definitiva para locação, antecipação e investimento imobiliário via Blockchain." />
+    <meta property="og:image" content="/favicon.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://vinculobrasil.com.br/" />
+    <meta property="twitter:title" content="Vinculo Brasil | Ecossistema Imobiliário" />
+    <meta property="twitter:description" content="A plataforma definitiva para locação, antecipação e investimento imobiliário via Blockchain." />
+    <meta property="twitter:image" content="/favicon.png" />
+
+    <!-- Splash Screens iOS -->
+    <link rel="apple-touch-startup-image" href="/splash/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/splash/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/splash/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/splash/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/splash/splash-1536x2048.png" media="(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/splash/splash-1668x2224.png" media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/splash/splash-2048x2732.png" media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" />
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <title>Vinculo Brasil | Ecossistema Imobiliário</title>
+
+    <!-- Preconnect to external origins -->
+    <link rel="preconnect" href="https://viacep.com.br" />
+    <link rel="dns-prefetch" href="https://viacep.com.br" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('[App] Service Worker registrado:', registration.scope);
+
+              // Verificar atualizacoes
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      // Nova versao disponivel
+                      console.log('[App] Nova versao disponivel!');
+                      // Pode mostrar um banner para o usuario atualizar
+                    }
+                  });
+                }
+              });
+            })
+            .catch((error) => {
+              console.error('[App] Erro ao registrar Service Worker:', error);
+            });
+        });
+      }
+    </script>
+
+    <!-- Standalone detection -->
+    <script>
+      // Detecta se esta rodando como PWA instalada
+      if (window.matchMedia('(display-mode: standalone)').matches ||
+          window.navigator.standalone === true) {
+        document.documentElement.classList.add('pwa-standalone');
+        console.log('[App] Rodando como PWA instalada');
+      }
+    </script>
+  </body>
+</html>

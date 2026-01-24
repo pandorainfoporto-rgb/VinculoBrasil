@@ -1,0 +1,1 @@
+# Token usado com sucesso. Cole novo token se precisar.

@@ -1,0 +1,138 @@
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_REPORT_INSTANCE
+
+Here is the input and output schema info of Tool SALESFORCE_GET_REPORT_INSTANCE of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"instance_id":{"type":"string","description":"The report instance ID returned from running a report.","title":"Instance Id","examples":["0LGWd000000MWUIOA4","0LGXXXXXXXXXXXXXXX"]},"report_id":{"type":"string","description":"The Salesforce ID of the report.","title":"Report Id","examples":["00OWd000001GtZ9MAK","00OXXXXXXXXXXXXXXX"]}},"required":["report_id","instance_id"],"title":"GetReportInstanceRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Report instance results including status, data, or error messages.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetReportInstanceResponseWrapper"}
+schema info of SALESFORCE_GET_REPORT_INSTANCE ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_GET_USER_INFO
+
+Here is the input and output schema info of Tool SALESFORCE_GET_USER_INFO of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"include_permissions":{"type":"boolean","description":"Whether to include user permissions in the response (requires additional API call).","title":"Include Permissions","default":false},"user_id":{"type":"string","description":"The Salesforce User ID to retrieve information for. If not provided, returns current user info.","title":"User Id","default":"","examples":["005XXXXXXXXXXXXXXX","005Wd000001E1BlIAK"]}},"title":"GetUserInfoRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"User information from Salesforce, either from userinfo endpoint or User object.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"GetUserInfoResponseWrapper"}
+schema info of SALESFORCE_GET_USER_INFO ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_LIST_ACCOUNTS
+
+Here is the input and output schema info of Tool SALESFORCE_LIST_ACCOUNTS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"query":{"type":"string","description":"SOQL query to fetch accounts. Use standard SOQL syntax to filter, sort, and limit results.","title":"Query","default":"SELECT Id, Name, Type, Industry, Phone, Website, BillingCity, ShippingCity, AnnualRevenue, NumberOfEmployees FROM Account","examples":["SELECT Id, Name FROM Account WHERE Type = 'Customer'","SELECT Id, Name, Industry FROM Account WHERE Industry = 'Technology' ORDER BY Name","SELECT Id, Name, AnnualRevenue FROM Account WHERE AnnualRevenue > 1000000 LIMIT 10"]}},"title":"ListAccountsRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce query API containing totalSize, done flag, and records array, or error response.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"ListAccountsResponseWrapper"}
+schema info of SALESFORCE_LIST_ACCOUNTS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_LIST_CAMPAIGNS
+
+Here is the input and output schema info of Tool SALESFORCE_LIST_CAMPAIGNS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"query":{"type":"string","description":"SOQL query to fetch campaigns. Use standard SOQL syntax to filter, sort, and limit results.","title":"Query","default":"SELECT Id, Name, Type, Status, StartDate, EndDate, BudgetedCost, ActualCost, ExpectedRevenue, IsActive, ParentId FROM Campaign","examples":["SELECT Id, Name, Type, Status FROM Campaign WHERE IsActive = true","SELECT Id, Name, StartDate, EndDate FROM Campaign ORDER BY StartDate DESC LIMIT 10","SELECT Id, Name, BudgetedCost FROM Campaign WHERE Type = 'Email' AND Status = 'In Progress'"]}},"title":"ListCampaignsRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce query API containing totalSize, done flag, and records array.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"ListCampaignsResponseWrapper"}
+schema info of SALESFORCE_LIST_CAMPAIGNS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_LIST_CONTACTS
+
+Here is the input and output schema info of Tool SALESFORCE_LIST_CONTACTS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"query":{"type":"string","description":"SOQL query to fetch contacts. Use standard SOQL syntax to filter, sort, and limit results.","title":"Query","default":"SELECT Id, FirstName, LastName, Email, Phone, Title, Department, AccountId FROM Contact","examples":["SELECT Id, FirstName, LastName FROM Contact WHERE Email != null","SELECT Id, FirstName, LastName, Email FROM Contact ORDER BY LastName LIMIT 10","SELECT Id, Name, Email FROM Contact WHERE CreatedDate = TODAY"]}},"title":"ListContactsRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce query API containing totalSize, done flag, and records array.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"ListContactsResponseWrapper"}
+schema info of SALESFORCE_LIST_CONTACTS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_LIST_DASHBOARDS
+
+Here is the input and output schema info of Tool SALESFORCE_LIST_DASHBOARDS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{},"title":"ListDashboardsRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"array","description":"List of dashboards available in the Salesforce organization or error response.","title":"Response Data","nullable":true,"items":{"properties":{}}}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"ListDashboardsResponseWrapper"}
+schema info of SALESFORCE_LIST_DASHBOARDS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_LIST_EMAIL_TEMPLATES
+
+Here is the input and output schema info of Tool SALESFORCE_LIST_EMAIL_TEMPLATES of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"folder_name":{"type":"string","description":"Filter by folder name to get templates from a specific folder.","title":"Folder Name","default":"","examples":["Marketing Templates","Support Templates","Unfiled Public Classic Email Templates"]},"include_body":{"type":"boolean","description":"Whether to include the template body content in results. Note: This may increase response size significantly.","title":"Include Body","default":false},"is_active_only":{"type":"boolean","description":"Whether to return only active templates. Set to false to include inactive templates.","title":"Is Active Only","default":true},"limit":{"type":"integer","description":"Maximum number of templates to return.","title":"Limit","default":50,"examples":[10,25,50,100,200]},"order_by":{"type":"string","description":"Field to sort results by.","title":"Order By","default":"Name","examples":["Name","Subject","LastModifiedDate","CreatedDate","TemplateType"]},"order_direction":{"type":"string","description":"Sort direction: ASC for ascending, DESC for descending.","title":"Order Direction","default":"ASC","examples":["ASC","DESC"]},"search_term":{"type":"string","description":"Search term to filter templates by name. Uses LIKE operator for partial matches.","title":"Search Term","default":"","examples":["Welcome","Case","Follow"]},"template_type":{"type":"string","description":"Filter by template type. Common values: text, custom, html, visualforce.","title":"Template Type","default":"","examples":["text","custom","html","visualforce"]}},"title":"ListEmailTemplatesRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Response containing the list of email templates and metadata.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"ListEmailTemplatesResponseWrapper"}
+schema info of SALESFORCE_LIST_EMAIL_TEMPLATES ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_LIST_LEADS
+
+Here is the input and output schema info of Tool SALESFORCE_LIST_LEADS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"query":{"type":"string","description":"SOQL query to fetch leads. Use standard SOQL syntax to filter, sort, and limit results.","title":"Query","default":"SELECT Id, FirstName, LastName, Company, Title, Email, Phone, Status, LeadSource, Rating, Industry FROM Lead","examples":["SELECT Id, FirstName, LastName, Company FROM Lead WHERE Status = 'New'","SELECT Id, Name, Email, Company FROM Lead ORDER BY CreatedDate DESC LIMIT 10","SELECT Id, Name, Rating FROM Lead WHERE Rating = 'Hot' AND Industry = 'Technology'"]}},"title":"ListLeadsRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce query API containing totalSize, done flag, and records array.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"ListLeadsResponseWrapper"}
+schema info of SALESFORCE_LIST_LEADS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_LIST_NOTES
+
+Here is the input and output schema info of Tool SALESFORCE_LIST_NOTES of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"query":{"type":"string","description":"SOQL query to fetch notes. Use standard SOQL syntax to filter, sort, and limit results.","title":"Query","default":"SELECT Id, Title, Body, IsPrivate, ParentId, OwnerId, CreatedDate, LastModifiedDate FROM Note","examples":["SELECT Id, Title FROM Note WHERE ParentId = '001XXXXXXXXXXXXXXX'","SELECT Id, Title, Body FROM Note WHERE IsPrivate = false ORDER BY CreatedDate DESC","SELECT Id, Title, ParentId FROM Note WHERE OwnerId = '005XXXXXXXXXXXXXXX' LIMIT 10","SELECT Id, Title FROM Note WHERE CreatedDate = THIS_MONTH"]}},"title":"ListNotesRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce query API containing totalSize, done flag, and records array, or error response.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"ListNotesResponseWrapper"}
+schema info of SALESFORCE_LIST_NOTES ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_LIST_OPPORTUNITIES
+
+Here is the input and output schema info of Tool SALESFORCE_LIST_OPPORTUNITIES of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"query":{"type":"string","description":"SOQL query to fetch opportunities. Use standard SOQL syntax to filter, sort, and limit results.","title":"Query","default":"SELECT Id, Name, StageName, CloseDate, Amount, Probability, Type, LeadSource, AccountId FROM Opportunity","examples":["SELECT Id, Name, Amount FROM Opportunity WHERE StageName = 'Closed Won'","SELECT Id, Name, CloseDate FROM Opportunity ORDER BY CloseDate DESC LIMIT 10","SELECT Id, Name, Amount FROM Opportunity WHERE Amount > 50000 AND CloseDate = THIS_QUARTER"]}},"title":"ListOpportunitiesRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce query API containing totalSize, done flag, and records array.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"ListOpportunitiesResponseWrapper"}
+schema info of SALESFORCE_LIST_OPPORTUNITIES ends.
