@@ -1,0 +1,138 @@
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_REMOVE_NOTE_OBJECT_BY_ID
+
+Here is the input and output schema info of Tool SALESFORCE_REMOVE_NOTE_OBJECT_BY_ID of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"id":{"type":"string","description":"The unique 15-character or 18-character Salesforce ID of the Note object to be deleted.","title":"Id","examples":["002R0000005hDFYIA2"]}},"required":["id"],"title":"RemoveNoteObjectByIdRequest","description":"Request schema for deleting a Salesforce Note object by its unique identifier."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Typically empty for a successful deletion (which returns an HTTP 204 No Content status). In other cases, such as errors, this field might contain details related to the outcome of the operation.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RemoveNoteObjectByIdResponseWrapper"}
+schema info of SALESFORCE_REMOVE_NOTE_OBJECT_BY_ID ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_REMOVE_OPPORTUNITY_BY_ID
+
+Here is the input and output schema info of Tool SALESFORCE_REMOVE_OPPORTUNITY_BY_ID of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"id":{"type":"string","description":"Unique identifier of the Salesforce Opportunity to be deleted, e.g., '001R0000005hDFYIA2'.","title":"Id","examples":["001R0000005hDFYIA2","001R0000003ABCDEFA"]}},"required":["id"],"title":"RemoveOpportunityByIdRequest","description":"Request schema for deleting a Salesforce Opportunity by its ID."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Dictionary that may contain data, especially in error cases; successful deletions (HTTP 204) typically have an empty body.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RemoveOpportunityByIdResponseWrapper"}
+schema info of SALESFORCE_REMOVE_OPPORTUNITY_BY_ID ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RETRIEVE_ACCOUNT_DATA_AND_ERROR_RESPONSES
+
+Here is the input and output schema info of Tool SALESFORCE_RETRIEVE_ACCOUNT_DATA_AND_ERROR_RESPONSES of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{},"title":"RetrieveAccountDataAndErrorResponsesRequest","description":"Request schema for retrieving metadata about the Salesforce Account sObject. This action does not require any request parameters."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"SObject metadata for the Account object, including attributes like name, label, key prefix, and related resource URLs.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RetrieveAccountDataAndErrorResponsesResponseWrapper"}
+schema info of SALESFORCE_RETRIEVE_ACCOUNT_DATA_AND_ERROR_RESPONSES ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RETRIEVE_CAMPAIGN_DATA_WITH_ERROR_HANDLING
+
+Here is the input and output schema info of Tool SALESFORCE_RETRIEVE_CAMPAIGN_DATA_WITH_ERROR_HANDLING of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{},"title":"RetrieveCampaignDataWithErrorHandlingRequest","description":"Request model for retrieving comprehensive information about the Salesforce Campaign sObject. No input parameters are required for this action."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"A dictionary containing detailed information and metadata for the Salesforce Campaign sObject. This includes object attributes (e.g., `queryable`, `searchable`), URLs for related operations (e.g., creating records, describing layouts, accessing specific records), and a list of recently viewed campaign records.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RetrieveCampaignDataWithErrorHandlingResponseWrapper"}
+schema info of SALESFORCE_RETRIEVE_CAMPAIGN_DATA_WITH_ERROR_HANDLING ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RETRIEVE_CONTACT_INFO_WITH_STANDARD_RESPONSES
+
+Here is the input and output schema info of Tool SALESFORCE_RETRIEVE_CONTACT_INFO_WITH_STANDARD_RESPONSES of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{},"title":"RetrieveContactInfoWithStandardResponsesRequest","description":"Request model for the action to retrieve metadata of the Salesforce Contact SObject. No input parameters are required for this action."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RetrieveContactInfoWithStandardResponsesResponseWrapper"}
+schema info of SALESFORCE_RETRIEVE_CONTACT_INFO_WITH_STANDARD_RESPONSES ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RETRIEVE_LEAD_BY_ID
+
+Here is the input and output schema info of Tool SALESFORCE_RETRIEVE_LEAD_BY_ID of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"fields":{"type":"string","description":"Comma-delimited list of Salesforce Lead field API names to return (e.g., Name,Email,Company). If omitted, all accessible fields are returned.","title":"Fields","default":null,"nullable":true,"examples":["Name,Email,Status,Company","FirstName,LastName,AnnualRevenue"]},"id":{"type":"string","description":"Unique identifier (ID) of the Salesforce Lead to retrieve.","title":"Id","examples":["00Q8c000001g3fHIEAY","00Q5j000009k1XZEAY"]}},"required":["id"],"title":"RetrieveLeadByIdRequest","description":"Defines the request parameters for retrieving a Salesforce Lead by its ID."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"A dictionary containing the retrieved fields and their values for the specified Lead. The keys are the field API names, and the values are their corresponding data.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RetrieveLeadByIdResponseWrapper"}
+schema info of SALESFORCE_RETRIEVE_LEAD_BY_ID ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RETRIEVE_LEAD_DATA_WITH_VARIOUS_RESPONSES
+
+Here is the input and output schema info of Tool SALESFORCE_RETRIEVE_LEAD_DATA_WITH_VARIOUS_RESPONSES of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{},"title":"RetrieveLeadDataWithVariousResponsesRequest","description":"Request model for retrieving Lead data. This operation does not require any specific input parameters."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Raw JSON response from the Salesforce API, typically containing Lead sObject details or a list of Lead records. The structure varies based on the API response.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RetrieveLeadDataWithVariousResponsesResponseWrapper"}
+schema info of SALESFORCE_RETRIEVE_LEAD_DATA_WITH_VARIOUS_RESPONSES ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RETRIEVE_NOTE_OBJECT_INFORMATION
+
+Here is the input and output schema info of Tool SALESFORCE_RETRIEVE_NOTE_OBJECT_INFORMATION of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{},"title":"RetrieveNoteObjectInformationRequest","description":"Request schema for `RetrieveNoteObjectInformation` action."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Detailed metadata for the Salesforce 'Note' SObject, including its fields, properties, and supported operations.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RetrieveNoteObjectInformationResponseWrapper"}
+schema info of SALESFORCE_RETRIEVE_NOTE_OBJECT_INFORMATION ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RETRIEVE_OPPORTUNITIES_DATA
+
+Here is the input and output schema info of Tool SALESFORCE_RETRIEVE_OPPORTUNITIES_DATA of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{},"title":"RetrieveOpportunitiesDataRequest","description":"Defines the request structure for retrieving Salesforce Opportunity records.\nThis action does not require any input parameters in the request body to fetch all opportunities."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"A dictionary representing the retrieved Salesforce Opportunity data. This typically includes a list of opportunity records, where each record is a dictionary of fields such as 'Id', 'Name', 'Amount', 'StageName', 'CloseDate', 'AccountId', and other standard or custom fields associated with Opportunity objects.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RetrieveOpportunitiesDataResponseWrapper"}
+schema info of SALESFORCE_RETRIEVE_OPPORTUNITIES_DATA ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RETRIEVE_OPPORTUNITY_BY_ID_WITH_OPTIONAL_FIELDS
+
+Here is the input and output schema info of Tool SALESFORCE_RETRIEVE_OPPORTUNITY_BY_ID_WITH_OPTIONAL_FIELDS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"fields":{"type":"string","description":"An optional, comma-delimited list of API names of the Opportunity fields to retrieve. If not specified, all accessible fields for the Opportunity object will be returned. This parameter is used as a query parameter in the GET request.","title":"Fields","default":null,"nullable":true,"examples":["Name,Amount,StageName,CloseDate","Description,Type,LeadSource,NextStep"]},"id":{"type":"string","description":"The unique Salesforce ID of the Opportunity record to retrieve. This is a required path parameter.","title":"Id","examples":["001R0000005hDFYIA2","006aj000002QyDSAAS"]}},"required":["id"],"title":"RetrieveOpportunityByIdWithOptionalFieldsRequest","description":"Defines the request parameters for retrieving a Salesforce Opportunity by its ID, with an option to specify desired fields."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"A dictionary containing the retrieved Opportunity data. Keys are the API names of the fields, and values are their corresponding values.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RetrieveOpportunityByIdWithOptionalFieldsResponseWrapper"}
+schema info of SALESFORCE_RETRIEVE_OPPORTUNITY_BY_ID_WITH_OPTIONAL_FIELDS ends.

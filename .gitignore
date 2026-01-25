@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# Production
+/build
+/dist
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary
+*.tmp
+.cache/
+
+# Claude user data
+.claude.user/
+GITHUB_TOKEN.txt
+.env.local.bak

@@ -1,0 +1,241 @@
+{
+  "id": "102019b93312577720292503a573fd25993",
+  "version": "102019b933125777011b15f1cbf27919f2b",
+  "schema": {
+    "name": "garantia",
+    "description": "Entity representing guarantees or collateral linked to contracts",
+    "fields": [
+      {
+        "name": "id",
+        "description": "Unique identifier for the guarantee",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System identifier"
+        }
+      },
+      {
+        "name": "data_creator",
+        "description": "id of the user who creates the record",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Audit trail"
+        }
+      },
+      {
+        "name": "data_updater",
+        "description": "id of the user who updates the record",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Audit trail"
+        }
+      },
+      {
+        "name": "create_time",
+        "description": "create time in timestamp unix",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System metadata"
+        },
+        "format": "timestamp"
+      },
+      {
+        "name": "update_time",
+        "description": "update time in timestamp unix",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System metadata"
+        },
+        "format": "timestamp"
+      },
+      {
+        "name": "contract_id",
+        "description": "Foreign Key to Contracts",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Relationship identifier"
+        }
+      },
+      {
+        "name": "garantidor_id",
+        "description": "Foreign Key to Users (Guarantor)",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Relationship identifier"
+        }
+      },
+      {
+        "name": "imovel_garantia_id",
+        "description": "Foreign Key to Imoveis (Property used as guarantee)",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Relationship identifier"
+        }
+      },
+      {
+        "name": "valor_avaliado",
+        "description": "Assessed value of the guarantee",
+        "type": 2,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Financial data"
+        },
+        "numeric": "float"
+      },
+      {
+        "name": "status_bloqueio",
+        "description": "Blocking status of the guarantee",
+        "type": 100,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Collateral state"
+        },
+        "enumeration": [
+          {
+            "value": "Unspecified"
+          },
+          {
+            "number": 1,
+            "value": "Bloqueado"
+          },
+          {
+            "number": 2,
+            "value": "Liberado"
+          },
+          {
+            "number": 3,
+            "value": "Parcial"
+          }
+        ]
+      },
+      {
+        "name": "margem_disponivel",
+        "description": "Available margin for the guarantee",
+        "type": 2,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Financial data"
+        },
+        "numeric": "float"
+      },
+      {
+        "name": "data_bloqueio",
+        "description": "Date when the guarantee was blocked in timestamp unix",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Event logging"
+        },
+        "nullable": true,
+        "format": "timestamp"
+      },
+      {
+        "name": "data_liberacao",
+        "description": "Date when the guarantee was released in timestamp unix",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Event logging"
+        },
+        "nullable": true,
+        "format": "timestamp"
+      }
+    ],
+    "indexes": [
+      {
+        "fields": [
+          "id"
+        ],
+        "unique": true,
+        "primary": true,
+        "order": false
+      },
+      {
+        "fields": [
+          "contract_id"
+        ],
+        "order": false
+      },
+      {
+        "fields": [
+          "garantidor_id"
+        ],
+        "order": false
+      },
+      {
+        "fields": [
+          "imovel_garantia_id"
+        ],
+        "order": false
+      },
+      {
+        "fields": [
+          "data_creator"
+        ],
+        "order": false
+      },
+      {
+        "fields": [
+          "data_updater"
+        ],
+        "order": false
+      }
+    ],
+    "relations": [
+      {
+        "referencing_fields": [
+          "contract_id"
+        ],
+        "referenced_entity": {
+          "name": "contrato"
+        },
+        "referenced_fields": [
+          "id"
+        ],
+        "cascade": true
+      },
+      {
+        "referencing_fields": [
+          "garantidor_id"
+        ],
+        "referenced_entity": {
+          "name": "usuario"
+        },
+        "referenced_fields": [
+          "id"
+        ]
+      },
+      {
+        "referencing_fields": [
+          "imovel_garantia_id"
+        ],
+        "referenced_entity": {
+          "name": "imovel"
+        },
+        "referenced_fields": [
+          "id"
+        ]
+      }
+    ]
+  },
+  "task": {
+    "id": "695cf5ec871aac6392e3a5b3",
+    "root": "695cef7bc0662b03161297fc",
+    "project": "695cef7bc0662b03161297fb",
+    "user": "a8911360-1081-700d-f06d-07e3591f1d58"
+  },
+  "namespace": {
+    "id": "01987547fc6c72ecb453bd2736bd4ea0",
+    "tenant": 2,
+    "name": "global-1",
+    "default": true
+  },
+  "revision": 1
+}

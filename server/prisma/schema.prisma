@@ -1,0 +1,2543 @@
+// ============================================
+// VINCULO BRASIL - SCHEMA PRISMA COMPLETO
+// PostgreSQL Database Schema
+// ============================================
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// AUTENTICACAO E USUARIOS
+// ============================================
+
+model User {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  passwordHash      String
+  name              String
+  phone             String?
+  cpf               String?   @unique
+  avatar            String?
+  status            UserStatus @default(ACTIVE)
+  emailVerified     Boolean   @default(false)
+  phoneVerified     Boolean   @default(false)
+  twoFactorEnabled  Boolean   @default(false)
+  twoFactorSecret   String?
+
+  // Dados para Split de Pagamentos (Proprietários)
+  pixKey            String?   // Chave PIX para repasse automático
+  pixKeyType        String?   // Tipo: CPF, CNPJ, EMAIL, PHONE, RANDOM
+  bankCode          String?   // Código do banco (ex: 001)
+  bankAgency        String?   // Agência bancária
+  bankAccount       String?   // Número da conta
+  bankAccountType   String?   // Tipo: CORRENTE, POUPANCA
+
+  // Carteira Blockchain Gerenciada (Invisible Wallet)
+  // Criada automaticamente no cadastro - usuário não precisa saber
+  managedWalletAddress      String?   // Endereço público (0x...)
+  managedWalletEncryptedKey String?   // Chave privada criptografada (AES-256)
+
+  roleId            String
+  role              Role      @relation(fields: [roleId], references: [id])
+
+  // Relacionamentos
+  agencyId          String?
+  agency            Agency?   @relation("AgencyUsers", fields: [agencyId], references: [id])
+  wallets           Wallet[]
+  properties        Property[]
+  leadsOwned        Lead[]    @relation("LeadOwner")
+  leadsCreated      Lead[]    @relation("LeadCreator")
+  deals             Deal[]
+  tickets           Ticket[]  @relation("TicketAgent")
+  ticketsCreated    Ticket[]  @relation("TicketCreator")
+  messages          Message[]
+  sessions          Session[]
+  auditLogs         AuditLog[]
+  notifications     Notification[]
+  cashbackBalance   CashbackBalance?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  lastLoginAt       DateTime?
+
+  @@index([email])
+  @@index([roleId])
+  @@index([agencyId])
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  permissions Json     // Array de permissoes
+  isSystem    Boolean  @default(false)
+
+  users       User[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token        String   @unique
+  refreshToken String   @unique
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+// ============================================
+// EMPRESA E CONFIGURACOES
+// ============================================
+
+model Agency {
+  id              String     @id @default(uuid())
+  name            String
+  legalName       String?    // Razão Social
+  cnpj            String?    @unique
+  creci           String?    // Registro no Conselho Regional
+  active          Boolean    @default(true)
+  commissionRate  Float      @default(10.0)
+  commissionModel String     @default("DEDUCT_FROM_OWNER") // 'DEDUCT_FROM_OWNER' | 'ADD_ON_PRICE'
+
+  // WHITE LABEL - Branding e Personalização
+  slug            String?    @unique // URL amigável: 'fatto-imoveis' -> /imob/fatto-imoveis
+  logoUrl         String?    // URL da logomarca
+  primaryColor    String?    @default("#0066FF") // Cor primária da marca (Hex)
+  secondaryColor  String?    @default("#00CC99") // Cor secundária
+  slogan          String?    // Ex: "Realizando sonhos em Dois Vizinhos"
+  whatsapp        String?    // WhatsApp para contato
+  instagram       String?    // Perfil do Instagram
+  website         String?    // Site externo da imobiliária
+  coverImageUrl   String?    // Imagem de capa do site (Hero Background)
+  description     String?    // Descrição da imobiliária
+
+  // LANDING PAGE - Personalização Avançada
+  bannerUrl       String?    // Imagem de banner secundário
+  aboutUs         String?    @db.Text // Texto "Sobre Nós" completo
+  aboutUsImageUrl String?    // Imagem para seção "Sobre Nós"
+  headerTitle     String?    // Título principal do cabeçalho hero
+  headerSubtitle  String?    // Subtítulo do cabeçalho hero
+  ctaText         String?    // Texto do botão CTA principal
+  ctaSecondaryText String?   // Texto do CTA secundário
+  address         String?    // Endereço físico (rua, número)
+  city            String?    // Cidade
+  state           String?    // Estado (UF)
+  zipCode         String?    // CEP
+  phone           String?    // Telefone fixo
+  email           String?    // Email de contato
+  workingHours    String?    // Horário de funcionamento
+  facebookUrl     String?    // Link do Facebook
+  youtubeUrl      String?    // Link do YouTube
+  linkedinUrl     String?    // Link do LinkedIn
+
+  // Gerado por IA
+  aiGeneratedHtml String?    @db.Text // HTML da landing page gerada por IA
+  aiGeneratedAt   DateTime?  // Quando foi gerada
+
+  // ========== VÍNCULO ADS - Saldo e Configuração ==========
+  adBalance           Decimal    @default(0) @db.Decimal(12, 2) // Saldo pré-pago para anúncios
+  allowRentDeduction  Boolean    @default(false) // Se permite descontar ads do repasse de aluguel
+
+  // Relacionamentos
+  properties        Property[]
+  users             User[]     @relation("AgencyUsers")
+  adCampaigns       AdCampaign[]
+  transactions      Transaction[]
+  suppliers         Supplier[]
+  serviceOrders     ServiceOrder[]
+  insurancePolicies InsurancePolicy[]
+  claims            Claim[]
+  supportTickets    SupportTicket[]
+  realtors          Realtor[]  @relation("AgencyRealtors")
+  bankAccounts      BankAccount[] @relation("AgencyBankAccounts")
+  accountsPayable   AccountsPayable[] @relation("AgencyPayables")
+  accountsReceivable AccountsReceivable[] @relation("AgencyReceivables")
+
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([cnpj])
+  @@index([active])
+  @@index([slug])
+}
+
+model Company {
+  id              String   @id @default(uuid())
+  name            String
+  tradeName       String?
+  cnpj            String   @unique
+  email           String
+  phone           String?
+  logo            String?
+  primaryColor    String   @default("#0066FF")
+  secondaryColor  String   @default("#00CC99")
+
+  // Endereco
+  street          String?
+  number          String?
+  complement      String?
+  neighborhood    String?
+  city            String?
+  state           String?
+  zipCode         String?
+
+  // Configuracoes
+  settings        Json     @default("{}")
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SystemConfig {
+  id          String   @id @default(uuid())
+  key         String   @unique   // Ex: CONTRACT_RENTAL_ADDRESS
+  value       String             // O valor em si
+  label       String?            // Nome amigável para o Admin ver
+  description String?            // Explicação
+  group       String   @default("GENERAL") // Ex: BLOCKCHAIN, PAYMENT, API
+  isSecret    Boolean  @default(false) // Se for true, esconde no front (ex: Private Key)
+  encrypted   Boolean  @default(false) // Se o valor está criptografado
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([group])
+}
+
+// ============================================
+// BLOCKCHAIN E WALLETS
+// ============================================
+
+model Wallet {
+  id              String       @id @default(uuid())
+  userId          String?
+  user            User?        @relation(fields: [userId], references: [id])
+
+  address         String       @unique
+  type            WalletType   @default(USER)
+  label           String?
+  isOperator      Boolean      @default(false)
+  isTreasury      Boolean      @default(false)
+
+  // Saldos
+  maticBalance    Decimal      @default(0) @db.Decimal(28, 18)
+  vbrzBalance     Decimal      @default(0) @db.Decimal(28, 18)
+
+  // NFTs possuidas
+  nfts            RentContractNFT[]
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([address])
+}
+
+model BlockchainTransaction {
+  id              String              @id @default(uuid())
+  txHash          String              @unique
+  network         String              @default("polygon")
+  type            BlockchainTxType
+  status          BlockchainTxStatus  @default(PENDING)
+
+  fromAddress     String
+  toAddress       String
+  value           Decimal             @db.Decimal(28, 18)
+  gasUsed         Decimal?            @db.Decimal(28, 0)
+  gasPrice        Decimal?            @db.Decimal(28, 0)
+
+  // Relacionamentos
+  contractNftId   String?
+  contractNft     RentContractNFT?    @relation(fields: [contractNftId], references: [id])
+
+  metadata        Json?
+  error           String?
+  confirmedAt     DateTime?
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([txHash])
+  @@index([fromAddress])
+  @@index([toAddress])
+}
+
+// ============================================
+// IMOVEIS E CONTRATOS
+// ============================================
+
+model Property {
+  id              String          @id @default(uuid())
+  ownerId         String
+  owner           User            @relation(fields: [ownerId], references: [id])
+
+  // Relacionamento com Agência
+  agencyId        String?
+  agency          Agency?         @relation(fields: [agencyId], references: [id])
+
+  // Dados do imovel
+  title           String
+  description     String?
+  type            PropertyType
+  status          PropertyStatus  @default(AVAILABLE)
+
+  // Endereco
+  street          String
+  number          String
+  complement      String?
+  neighborhood    String
+  city            String
+  state           String
+  zipCode         String
+  latitude        Decimal?        @db.Decimal(10, 8)
+  longitude       Decimal?        @db.Decimal(11, 8)
+
+  // Caracteristicas
+  area            Decimal?        @db.Decimal(10, 2)
+  bedrooms        Int?
+  bathrooms       Int?
+  parkingSpaces   Int?
+  floor           Int?
+  furnished       Boolean         @default(false)
+  petFriendly     Boolean         @default(false)
+
+  // Valores
+  rentValue       Decimal         @db.Decimal(12, 2)
+  condoFee        Decimal?        @db.Decimal(12, 2)
+  iptuValue       Decimal?        @db.Decimal(12, 2)
+
+  // Imagens
+  images          PropertyImage[]
+
+  // Vistorias
+  inspections     Inspection[]
+
+  // Contratos
+  contracts       RentContract[]
+
+  // ========== VÍNCULO ADS - Promoção e Destaque ==========
+  isPromoted      Boolean         @default(false)
+  promotedUntil   DateTime?       // Data fim do destaque
+  promotionType   String?         // 'FIXED_TIME' | 'CPC' (Cost Per Click)
+  priorityScore   Int             @default(0) // Quanto maior, mais no topo
+  clicksCount     Int             @default(0) // Contagem para cobrança CPC
+
+  // Campanhas de Ads
+  adCampaigns     AdCampaign[]
+
+  // ========== PROTOCOLO DE GARANTIA (COLLATERAL) ==========
+  // Permite usar o imóvel como garantia para outros contratos no ecossistema
+  collateralEnabled       Boolean         @default(false) // Agência marcou a opção
+  collateralStatus        String?         // 'PENDING_CONSENT' | 'APPROVED' | 'REJECTED' | 'ACTIVE' | 'SUSPENDED'
+  collateralConsentSentAt DateTime?       // Quando foi enviado o pedido de consentimento
+  collateralConsentAt     DateTime?       // Quando o proprietário aceitou
+  collateralConsentHash   String?         // Hash blockchain do consentimento
+  collateralYieldRate     Float?          // Taxa de yield mensal (ex: 0.005 = 0.5%)
+  collateralMaxExposure   Decimal?        @db.Decimal(12, 2) // Valor máximo de exposição como garantia
+  collateralActiveLoans   Int             @default(0) // Quantos contratos estão usando esta garantia
+  collateralTotalEarned   Decimal?        @db.Decimal(12, 2) // Total ganho como garantidor
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([ownerId])
+  @@index([agencyId])
+  @@index([status])
+  @@index([city, state])
+  @@index([isPromoted])
+  @@index([priorityScore])
+}
+
+model PropertyImage {
+  id          String   @id @default(uuid())
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  url         String
+  caption     String?
+  order       Int      @default(0)
+
+  createdAt   DateTime @default(now())
+
+  @@index([propertyId])
+}
+
+model Inspection {
+  id              String            @id @default(uuid())
+  propertyId      String
+  property        Property          @relation(fields: [propertyId], references: [id])
+
+  type            InspectionType
+  status          InspectionStatus  @default(SCHEDULED)
+  scheduledAt     DateTime
+  completedAt     DateTime?
+
+  // Dados da vistoria
+  inspector       String?
+  report          Json?
+  photos          Json?             // Array de URLs
+  signature       String?           // Base64 da assinatura
+
+  // Hash blockchain
+  blockchainHash  String?
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([propertyId])
+  @@index([status])
+}
+
+model RentContract {
+  id              String              @id @default(uuid())
+  propertyId      String
+  property        Property            @relation(fields: [propertyId], references: [id])
+
+  // Partes
+  tenantName      String
+  tenantCpf       String
+  tenantEmail     String
+  tenantPhone     String
+
+  // Garantidores
+  guarantors      Guarantor[]
+
+  // Dados do contrato
+  status          ContractStatus      @default(DRAFT)
+  startDate       DateTime
+  endDate         DateTime
+  rentValue       Decimal             @db.Decimal(12, 2)
+  dueDay          Int                 @default(5)
+
+  // Taxas e splits
+  platformFee     Decimal             @default(0.05) @db.Decimal(5, 4)
+  guarantorFee    Decimal             @default(0.05) @db.Decimal(5, 4)
+  tokenHolderFee  Decimal             @default(0.05) @db.Decimal(5, 4)
+  ownerShare      Decimal             @default(0.85) @db.Decimal(5, 4)
+
+  // Snapshot Financeiro (85/15 Split)
+  ownerNetRequest Decimal?            @db.Decimal(12, 2)
+  financialSnapshot Json?
+
+  // NFT
+  nft             RentContractNFT?
+
+  // Pagamentos
+  payments        Payment[]
+
+  // Empréstimos (Antecipação de Recebíveis)
+  loans           NFTLoan[]
+
+  // P2P Marketplace (Cessão de Crédito)
+  p2pListings     P2PListing[]
+
+  // Documento
+  documentUrl     String?
+  signedAt        DateTime?
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([propertyId])
+  @@index([status])
+  @@index([tenantCpf])
+}
+
+model Guarantor {
+  id          String       @id @default(uuid())
+  contractId  String
+  contract    RentContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  // Tipo de garantidor: INDIVIDUAL (pessoa física), COMPANY (seguradora/empresa), COLLATERAL (imóvel colateral)
+  type        String       @default("INDIVIDUAL") // INDIVIDUAL | COMPANY | COLLATERAL
+
+  name        String
+  cpf         String       // CPF ou CNPJ
+  email       String
+  phone       String
+
+  // Dados para Split de Pagamentos (PIX)
+  pixKey      String?      // Chave PIX para repasse automático
+  pixKeyType  String?      // Tipo: CPF, CNPJ, EMAIL, PHONE, RANDOM
+  asaasWalletId String?    // ID da subconta no Asaas (se aplicável)
+
+  // Stake em VBRz / Valor Garantido
+  stakeAmount Decimal      @db.Decimal(18, 2)
+  walletId    String?      // Wallet blockchain (se tiver)
+
+  // Taxa de remuneração (percentual do VT que recebe)
+  feePercentage Decimal?   @db.Decimal(5, 4) // Ex: 0.05 = 5%
+  fixedFee      Decimal?   @db.Decimal(12, 2) // Valor fixo mensal (ex: R$ 30)
+
+  status      GuarantorStatus @default(PENDING)
+  approvedAt  DateTime?
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([contractId])
+  @@index([type])
+}
+
+model RentContractNFT {
+  id              String       @id @default(uuid())
+  contractId      String       @unique
+  contract        RentContract @relation(fields: [contractId], references: [id])
+
+  tokenId         String       @unique
+  contractAddress String
+  ownerWalletId   String
+  ownerWallet     Wallet       @relation(fields: [ownerWalletId], references: [id])
+
+  // Metadados
+  metadataUri     String?
+  imageUri        String?
+
+  // Transacoes
+  transactions    BlockchainTransaction[]
+
+  mintedAt        DateTime?
+  burnedAt        DateTime?
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([tokenId])
+  @@index([ownerWalletId])
+}
+
+// ============================================
+// FINANCEIRO
+// ============================================
+
+model Payment {
+  id              String          @id @default(uuid())
+  contractId      String
+  contract        RentContract    @relation(fields: [contractId], references: [id])
+
+  type            PaymentType
+  status          PaymentStatus   @default(PENDING)
+
+  amount          Decimal         @db.Decimal(12, 2)
+  dueDate         DateTime
+  paidAt          DateTime?
+
+  // Gateway
+  gatewayId       String?
+  gatewayProvider String?         // asaas, transfero
+  paymentMethod   String?         // pix, boleto, card
+
+  // Split
+  ownerAmount     Decimal?        @db.Decimal(12, 2)
+  platformAmount  Decimal?        @db.Decimal(12, 2)
+  guarantorAmount Decimal?        @db.Decimal(12, 2)
+  tokenAmount     Decimal?        @db.Decimal(12, 2)
+
+  // Comprovantes
+  receiptUrl      String?
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([contractId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+// ============================================
+// ANTECIPAÇÃO DE RECEBÍVEIS (NFT LOANS)
+// Permite ao proprietário antecipar aluguéis futuros
+// usando o NFT do contrato como garantia
+// ============================================
+
+model NFTLoan {
+  id                String          @id @default(uuid())
+
+  // Contrato de origem (cujos recebíveis serão antecipados)
+  contractId        String
+  contract          RentContract    @relation(fields: [contractId], references: [id])
+
+  // NFT usado como colateral
+  nftTokenId        String          // ID do token no smart contract
+  nftContractAddress String         // Endereço do smart contract NFT
+
+  // Solicitante do empréstimo
+  borrowerId        String          // ID do usuário (proprietário ou agência)
+  borrowerType      String          // OWNER | AGENCY
+  borrowerPixKey    String?         // PIX para receber o valor
+
+  // Valores do Empréstimo
+  requestedAmount   Decimal         @db.Decimal(12, 2) // Valor solicitado
+  approvedAmount    Decimal?        @db.Decimal(12, 2) // Valor aprovado
+  disbursedAmount   Decimal?        @db.Decimal(12, 2) // Valor efetivamente liberado
+
+  // Taxas e Custos
+  interestRate      Decimal         @db.Decimal(5, 4)  // Taxa de juros (ex: 0.025 = 2.5% a.m.)
+  platformFee       Decimal         @db.Decimal(12, 2) // Taxa da plataforma
+  totalCost         Decimal?        @db.Decimal(12, 2) // Custo total (juros + taxas)
+
+  // Recebíveis cedidos (meses futuros de aluguel)
+  monthsAnticipated Int             // Quantos meses serão antecipados
+  startMonth        DateTime        // Primeiro mês cedido
+  endMonth          DateTime        // Último mês cedido
+
+  // Fornecedor de Liquidez (quem empresta o dinheiro)
+  liquidityProviderId String?       // ID do garantidor/investidor
+  liquidityProviderType String?     // PLATFORM | INVESTOR | POOL
+  liquidityProviderPixKey String?   // PIX do fornecedor (se externo)
+
+  // Status
+  status            NFTLoanStatus   @default(PENDING)
+  // PENDING -> APPROVED -> DISBURSED -> REPAYING -> SETTLED | DEFAULTED
+
+  // Datas importantes
+  requestedAt       DateTime        @default(now())
+  approvedAt        DateTime?
+  disbursedAt       DateTime?       // Quando o dinheiro foi enviado
+  settledAt         DateTime?       // Quando foi quitado
+
+  // Blockchain
+  loanTxHash        String?         // Hash da transação de criação
+  settlementTxHash  String?         // Hash da transação de quitação
+  nftLockedAt       DateTime?       // Quando o NFT foi travado como garantia
+
+  // Pagamentos recebidos (para quitação)
+  paymentsReceived  Decimal         @default(0) @db.Decimal(12, 2)
+  remainingBalance  Decimal?        @db.Decimal(12, 2) // Saldo devedor
+
+  // Observações
+  notes             String?
+  rejectionReason   String?
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([contractId])
+  @@index([borrowerId])
+  @@index([status])
+  @@index([nftTokenId])
+}
+
+// Pagamentos vinculados a um empréstimo (para rastreamento de quitação)
+model NFTLoanPayment {
+  id              String          @id @default(uuid())
+
+  loanId          String
+  // loan            NFTLoan         @relation(fields: [loanId], references: [id])
+
+  // Pagamento original que foi cedido
+  paymentId       String?         // ID do Payment original (se existir)
+  paymentMonth    DateTime        // Mês de referência
+
+  // Valores
+  expectedAmount  Decimal         @db.Decimal(12, 2) // Valor esperado
+  receivedAmount  Decimal?        @db.Decimal(12, 2) // Valor efetivamente recebido
+  status          String          @default("PENDING") // PENDING | RECEIVED | PARTIAL | DEFAULTED
+
+  // Datas
+  dueDate         DateTime
+  receivedAt      DateTime?
+
+  createdAt       DateTime        @default(now())
+
+  @@index([loanId])
+  @@index([status])
+}
+
+enum NFTLoanStatus {
+  PENDING           // Solicitação em análise
+  APPROVED          // Aprovado, aguardando desembolso
+  DISBURSED         // Dinheiro liberado, NFT travado
+  REPAYING          // Em processo de pagamento
+  SETTLED           // Quitado com sucesso
+  DEFAULTED         // Inadimplente
+  CANCELLED         // Cancelado antes do desembolso
+}
+
+model Transaction {
+  id              String            @id @default(uuid())
+
+  type            TransactionType
+  category        String
+  description     String
+
+  amount          Decimal           @db.Decimal(12, 2)
+  date            DateTime          @default(now())
+  status          TransactionStatus @default(PENDING)
+
+  // Relacionamentos
+  paymentId       String?
+  agencyId        String?
+  agency          Agency?           @relation(fields: [agencyId], references: [id])
+
+  // Metadados
+  metadata        Json?
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([type])
+  @@index([category])
+  @@index([createdAt])
+  @@index([agencyId])
+  @@index([date])
+}
+
+// ============================================
+// TOKEN VBRz E CASHBACK
+// ============================================
+
+model VBRzTransaction {
+  id              String          @id @default(uuid())
+
+  type            VBRzTxType
+  amount          Decimal         @db.Decimal(28, 18)
+
+  fromAddress     String?
+  toAddress       String?
+
+  description     String?
+  txHash          String?
+
+  createdAt       DateTime        @default(now())
+
+  @@index([type])
+  @@index([fromAddress])
+  @@index([toAddress])
+}
+
+model CashbackBalance {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id])
+
+  availableVBRz   Decimal  @default(0) @db.Decimal(28, 18)
+  pendingVBRz     Decimal  @default(0) @db.Decimal(28, 18)
+  totalEarned     Decimal  @default(0) @db.Decimal(28, 18)
+  totalRedeemed   Decimal  @default(0) @db.Decimal(28, 18)
+
+  // Nivel de fidelidade
+  loyaltyLevel    LoyaltyLevel @default(BRONZE)
+  loyaltyPoints   Int          @default(0)
+
+  updatedAt       DateTime @updatedAt
+}
+
+model CashbackTransaction {
+  id              String              @id @default(uuid())
+  userId          String
+
+  type            CashbackTxType
+  amount          Decimal             @db.Decimal(28, 18)
+
+  // Origem
+  sourceType      String?             // payment, referral, bonus
+  sourceId        String?
+
+  description     String?
+
+  createdAt       DateTime            @default(now())
+
+  @@index([userId])
+  @@index([type])
+}
+
+// ============================================
+// CRM - LEADS E DEALS
+// ============================================
+
+model Lead {
+  id              String      @id @default(uuid())
+
+  // Dados do lead
+  name            String
+  email           String?
+  phone           String?
+  cpf             String?
+
+  // Origem
+  source          String?     // website, whatsapp, referral
+  campaign        String?
+
+  // Status
+  status          LeadStatus  @default(NEW)
+  score           Int         @default(0)
+
+  // Responsavel
+  ownerId         String?
+  owner           User?       @relation("LeadOwner", fields: [ownerId], references: [id])
+
+  createdById     String?
+  createdBy       User?       @relation("LeadCreator", fields: [createdById], references: [id])
+
+  // Interesse
+  interestType    String?     // rent, buy, sell, invest
+  budget          Decimal?    @db.Decimal(12, 2)
+  notes           String?
+
+  // Relacionamentos
+  deals           Deal[]
+  activities      LeadActivity[]
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  convertedAt     DateTime?
+
+  @@index([status])
+  @@index([ownerId])
+  @@index([source])
+}
+
+model LeadActivity {
+  id          String   @id @default(uuid())
+  leadId      String
+  lead        Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  type        String   // call, email, meeting, note
+  title       String
+  description String?
+  scheduledAt DateTime?
+  completedAt DateTime?
+
+  createdAt   DateTime @default(now())
+
+  @@index([leadId])
+}
+
+model Pipeline {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  isDefault   Boolean  @default(false)
+
+  stages      PipelineStage[]
+  deals       Deal[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PipelineStage {
+  id          String   @id @default(uuid())
+  pipelineId  String
+  pipeline    Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+
+  name        String
+  color       String   @default("#6366F1")
+  order       Int
+
+  deals       Deal[]
+
+  @@index([pipelineId])
+}
+
+model Deal {
+  id              String        @id @default(uuid())
+
+  // Pipeline
+  pipelineId      String
+  pipeline        Pipeline      @relation(fields: [pipelineId], references: [id])
+  stageId         String
+  stage           PipelineStage @relation(fields: [stageId], references: [id])
+
+  // Dados
+  title           String
+  value           Decimal       @db.Decimal(12, 2)
+  probability     Int           @default(50)
+
+  // Relacionamentos
+  leadId          String?
+  lead            Lead?         @relation(fields: [leadId], references: [id])
+
+  ownerId         String
+  owner           User          @relation(fields: [ownerId], references: [id])
+
+  // Status
+  status          DealStatus    @default(OPEN)
+  expectedCloseAt DateTime?
+  closedAt        DateTime?
+  lostReason      String?
+
+  notes           String?
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([pipelineId])
+  @@index([stageId])
+  @@index([ownerId])
+  @@index([status])
+}
+
+// ============================================
+// OMNICHANNEL E ATENDIMENTO
+// ============================================
+
+model Ticket {
+  id              String        @id @default(uuid())
+
+  // Cliente
+  contactName     String
+  contactEmail    String?
+  contactPhone    String?
+
+  // Atendimento
+  channel         ChannelType
+  status          TicketStatus  @default(OPEN)
+  priority        Priority      @default(MEDIUM)
+
+  subject         String?
+
+  // Agente
+  agentId         String?
+  agent           User?         @relation("TicketAgent", fields: [agentId], references: [id])
+
+  createdById     String?
+  createdBy       User?         @relation("TicketCreator", fields: [createdById], references: [id])
+
+  // Mensagens
+  messages        Message[]
+
+  // SLA
+  firstResponseAt DateTime?
+  resolvedAt      DateTime?
+
+  // Tags
+  tags            String[]
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([status])
+  @@index([agentId])
+  @@index([channel])
+}
+
+model Message {
+  id          String      @id @default(uuid())
+  ticketId    String
+  ticket      Ticket      @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  // Remetente
+  senderId    String?
+  sender      User?       @relation(fields: [senderId], references: [id])
+  senderType  SenderType
+  senderName  String?
+
+  // Conteudo
+  content     String
+  contentType MessageContentType @default(TEXT)
+
+  // Anexos
+  attachments Json?
+
+  // Canal
+  channel     ChannelType
+  externalId  String?     // ID da mensagem no WhatsApp, etc.
+
+  // Status
+  status      MessageStatus @default(SENT)
+  readAt      DateTime?
+
+  createdAt   DateTime    @default(now())
+
+  @@index([ticketId])
+  @@index([senderId])
+}
+
+model WhatsAppSession {
+  id              String   @id @default(uuid())
+
+  phoneNumber     String   @unique
+  sessionData     Json?
+  status          String   @default("disconnected")
+  qrCode          String?
+
+  lastConnectedAt DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ============================================
+// AUTOMACAO E MARKETING
+// ============================================
+
+model AutomationFlow {
+  id          String            @id @default(uuid())
+  name        String
+  description String?
+
+  trigger     String            // new_lead, payment_received, etc.
+  conditions  Json?
+  actions     Json              // Array de acoes
+
+  isActive    Boolean           @default(true)
+
+  executions  FlowExecution[]
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model FlowExecution {
+  id          String         @id @default(uuid())
+  flowId      String
+  flow        AutomationFlow @relation(fields: [flowId], references: [id])
+
+  status      String         @default("running")
+  input       Json?
+  output      Json?
+  error       String?
+
+  startedAt   DateTime       @default(now())
+  completedAt DateTime?
+
+  @@index([flowId])
+}
+
+model EmailTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  subject     String
+  body        String   @db.Text
+  variables   String[] // {{name}}, {{property}}, etc.
+
+  category    String?
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Campaign {
+  id              String          @id @default(uuid())
+  name            String
+  description     String?
+
+  type            CampaignType
+  status          CampaignStatus  @default(DRAFT)
+
+  // Conteudo
+  subject         String?
+  content         String?         @db.Text
+  templateId      String?
+
+  // Segmentacao
+  targetCriteria  Json?
+
+  // Agendamento
+  scheduledAt     DateTime?
+  sentAt          DateTime?
+
+  // Metricas
+  totalSent       Int             @default(0)
+  totalOpened     Int             @default(0)
+  totalClicked    Int             @default(0)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([status])
+  @@index([type])
+}
+
+// ============================================
+// NOTIFICACOES E LOGS
+// ============================================
+
+model Notification {
+  id          String           @id @default(uuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        NotificationType
+  title       String
+  message     String
+  data        Json?
+
+  read        Boolean          @default(false)
+  readAt      DateTime?
+
+  createdAt   DateTime         @default(now())
+
+  @@index([userId])
+  @@index([read])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+
+  action      String
+  entity      String
+  entityId    String?
+
+  oldData     Json?
+  newData     Json?
+
+  ipAddress   String?
+  userAgent   String?
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([entity])
+  @@index([createdAt])
+}
+
+model WebhookLog {
+  id          String   @id @default(uuid())
+
+  provider    String   // asaas, transfero, etc.
+  event       String
+  payload     Json
+
+  status      String   @default("received")
+  processedAt DateTime?
+  error       String?
+
+  createdAt   DateTime @default(now())
+
+  @@index([provider])
+  @@index([event])
+}
+
+// ============================================
+// VÍNCULO ADS - Sistema de Anúncios Patrocinados
+// ============================================
+
+model AdConfig {
+  id              String   @id @default(uuid())
+
+  // Preços globais configurados pelo SuperAdmin
+  cpcPrice        Decimal  @default(0.50) @db.Decimal(12, 2)  // Preço por clique (R$)
+  dailyPrice      Decimal  @default(10.00) @db.Decimal(12, 2) // Preço por dia de destaque (R$)
+  heroPrice       Decimal  @default(50.00) @db.Decimal(12, 2) // Preço para posição Hero/Destaque Principal (R$)
+  weeklyPrice     Decimal  @default(60.00) @db.Decimal(12, 2) // Preço por semana (R$)
+  monthlyPrice    Decimal  @default(200.00) @db.Decimal(12, 2) // Preço por mês (R$)
+
+  // Configurações
+  maxCpcPerDay    Int      @default(100)  // Limite de cliques cobrados por dia
+  minBalance      Decimal  @default(10.00) @db.Decimal(12, 2) // Saldo mínimo para ativar ads
+
+  // Metadata
+  description     String?
+  isActive        Boolean  @default(true)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model AdCampaign {
+  id              String          @id @default(uuid())
+
+  // Relacionamentos
+  propertyId      String
+  property        Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  agencyId        String
+  agency          Agency          @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  // Dados da Campanha
+  name            String?
+  campaignType    AdCampaignType  @default(FIXED_TIME)
+
+  // Período
+  startDate       DateTime        @default(now())
+  endDate         DateTime
+
+  // Custos
+  totalCost       Decimal         @default(0) @db.Decimal(12, 2)
+  dailyCost       Decimal?        @db.Decimal(12, 2)
+  clicksCost      Decimal?        @db.Decimal(12, 2)
+
+  // Métricas
+  impressions     Int             @default(0)
+  clicks          Int             @default(0)
+  ctr             Decimal?        @db.Decimal(5, 4) // Click-through rate
+
+  // Pagamento
+  paymentMethod   AdPaymentMethod @default(PREPAID_BALANCE)
+  paidAt          DateTime?
+  invoiceId       String?
+
+  // Status
+  status          AdCampaignStatus @default(PENDING)
+  pausedAt        DateTime?
+  cancelledAt     DateTime?
+  cancelReason    String?
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([propertyId])
+  @@index([agencyId])
+  @@index([status])
+  @@index([startDate])
+  @@index([endDate])
+}
+
+enum AdCampaignType {
+  FIXED_TIME      // Tempo fixo (diário, semanal, mensal)
+  CPC             // Cost Per Click
+  HERO            // Posição de destaque principal
+}
+
+enum AdPaymentMethod {
+  PREPAID_BALANCE    // Saldo pré-pago da agência
+  DEDUCT_FROM_RENT   // Descontar do repasse de aluguel
+  PIX                // Pagamento via PIX
+  CARD               // Cartão de crédito
+}
+
+enum AdCampaignStatus {
+  PENDING         // Aguardando pagamento/aprovação
+  ACTIVE          // Campanha ativa
+  PAUSED          // Pausada temporariamente
+  FINISHED        // Período encerrado
+  CANCELLED       // Cancelada
+  OUT_OF_BUDGET   // Sem saldo
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+enum WalletType {
+  USER
+  OPERATOR
+  TREASURY
+  ESCROW
+}
+
+enum BlockchainTxType {
+  MINT_NFT
+  BURN_NFT
+  TRANSFER_NFT
+  TRANSFER_TOKEN
+  STAKE
+  UNSTAKE
+  SPLIT_PAYMENT
+}
+
+enum BlockchainTxStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+enum PropertyType {
+  APARTMENT
+  HOUSE
+  COMMERCIAL
+  LAND
+  STUDIO
+  LOFT
+  PENTHOUSE
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  RENTED
+  MAINTENANCE
+  INACTIVE
+}
+
+enum InspectionType {
+  ENTRY
+  EXIT
+  PERIODIC
+}
+
+enum InspectionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ContractStatus {
+  DRAFT
+  PENDING_SIGNATURES
+  PENDING_GUARANTOR
+  ACTIVE
+  EXPIRED
+  TERMINATED
+  CANCELLED
+}
+
+enum GuarantorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  STAKED
+}
+
+enum PaymentType {
+  RENT
+  DEPOSIT
+  CONDO_FEE
+  IPTU
+  FINE
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  OVERDUE
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum VBRzTxType {
+  MINT
+  BURN
+  TRANSFER
+  STAKE
+  UNSTAKE
+  CASHBACK
+  REDEEM
+}
+
+enum LoyaltyLevel {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  DIAMOND
+}
+
+enum CashbackTxType {
+  EARNED
+  REDEEMED
+  EXPIRED
+  BONUS
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  UNQUALIFIED
+  NEGOTIATION
+  CONVERTED
+  LOST
+}
+
+enum DealStatus {
+  OPEN
+  WON
+  LOST
+}
+
+enum ChannelType {
+  WHATSAPP
+  EMAIL
+  CHAT
+  PHONE
+  SMS
+}
+
+enum TicketStatus {
+  OPEN
+  PENDING
+  IN_PROGRESS
+  WAITING_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum SenderType {
+  CUSTOMER
+  AGENT
+  BOT
+  SYSTEM
+}
+
+enum MessageContentType {
+  TEXT
+  IMAGE
+  AUDIO
+  VIDEO
+  DOCUMENT
+  LOCATION
+  TEMPLATE
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum CampaignType {
+  EMAIL
+  WHATSAPP
+  SMS
+  PUSH
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+  PAUSED
+  CANCELLED
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  PAYMENT
+  CONTRACT
+  MESSAGE
+  SYSTEM
+}
+
+// ============================================
+// MARKETPLACE - GESTAO DE PARCEIROS E PRODUTOS
+// ============================================
+
+enum MarketplaceItemStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CHANGES_REQUESTED
+}
+
+model Partner {
+  id                      String            @id @default(uuid())
+
+  // Dados do Parceiro
+  name                    String
+  tradeName               String?
+  cnpj                    String            @unique
+  email                   String
+  phone                   String?
+  website                 String?
+  logo                    String?
+  description             String?
+
+  // Endereco
+  street                  String?
+  number                  String?
+  complement              String?
+  neighborhood            String?
+  city                    String?
+  state                   String?
+  zipCode                 String?
+
+  // Financeiro - Nossa comissao padrao sobre produtos deste parceiro
+  defaultCommissionRate   Float             @default(0.10) // 10% padrao
+
+  // Status
+  isActive                Boolean           @default(true)
+
+  // Relacionamentos
+  items                   MarketplaceItem[]
+  voucherCampaigns        VoucherCampaign[]
+
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+
+  @@index([cnpj])
+  @@index([isActive])
+}
+
+model MarketplaceItem {
+  id                      String                  @id @default(uuid())
+
+  // Relacionamento com Parceiro
+  partnerId               String
+  partner                 Partner                 @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  // Dados do Produto/Servico
+  title                   String
+  description             String?                 @db.Text
+  category                String                  // seguro, mudanca, internet, limpeza, etc.
+  basePrice               Decimal                 @db.Decimal(12, 2)
+  images                  String[]                // Array de URLs
+
+  // Status de Aprovacao
+  status                  MarketplaceItemStatus   @default(PENDING)
+  adminFeedback           String?                 @db.Text // Feedback do admin para alteracoes
+
+  // Financeiro
+  negotiatedCommission    Float?                  // Sobrescreve defaultCommissionRate do parceiro
+
+  // Metodos de Pagamento Aceitos
+  acceptsVbrz             Boolean                 @default(false)
+  acceptsCrypto           Boolean                 @default(false)
+  acceptsPix              Boolean                 @default(true)
+  acceptsCard             Boolean                 @default(true)
+
+  // Descontos para clientes Vinculo
+  vinculoClientDiscount   Float                   @default(0) // % de desconto
+
+  // Ordenacao e Destaque
+  featured                Boolean                 @default(false)
+  displayOrder            Int                     @default(0)
+
+  // Visibilidade
+  isActive                Boolean                 @default(true)
+
+  // Datas de aprovacao/publicacao
+  submittedAt             DateTime                @default(now())
+  approvedAt              DateTime?
+  approvedBy              String?                 // userId do admin que aprovou
+
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+
+  @@index([partnerId])
+  @@index([status])
+  @@index([category])
+  @@index([isActive])
+}
+
+// ============================================
+// VOUCHERS & TOKENOMICS VBRz
+// ============================================
+
+enum VoucherSettlementType {
+  BURN            // VBRz é queimado (enviado para endereço dead) - Deflação
+  PARTNER_WALLET  // VBRz é transferido para carteira do Parceiro - Circulação
+}
+
+enum VoucherCodeStatus {
+  AVAILABLE       // Disponível para resgate
+  REDEEMED        // Já foi resgatado
+  EXPIRED         // Expirado
+  CANCELLED       // Cancelado pelo admin
+}
+
+model VoucherCampaign {
+  id                      String                  @id @default(uuid())
+
+  // Relacionamento com Parceiro
+  partnerId               String
+  partner                 Partner                 @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  // Dados da Campanha
+  title                   String
+  description             String?                 @db.Text
+  rules                   String?                 @db.Text  // Regras de uso
+  termsAndConditions      String?                 @db.Text
+
+  // Valor e Economia
+  costInVbrz              Decimal                 @db.Decimal(18, 8) // Custo em tokens VBRz
+  originalValue           Decimal?                @db.Decimal(12, 2) // Valor original em BRL (para mostrar economia)
+  discountPercentage      Float?                  // % de desconto que o voucher oferece
+
+  // Tipo de Liquidação (CRÍTICO para Tokenomics)
+  settlementType          VoucherSettlementType   @default(BURN)
+  partnerWalletAddress    String?                 // Endereço da carteira do parceiro (se PARTNER_WALLET)
+
+  // Estoque e Limites
+  totalStock              Int                     // Quantidade total de vouchers
+  availableStock          Int                     // Quantidade disponível
+  maxPerUser              Int                     @default(1) // Máximo por usuário
+  minVbrzBalance          Decimal?                @db.Decimal(18, 8) // Saldo mínimo de VBRz para participar
+
+  // Datas
+  startDate               DateTime                @default(now())
+  expirationDate          DateTime?               // Data de expiração da campanha
+
+  // Imagem/Visual
+  bannerImage             String?
+  thumbnailImage          String?
+
+  // Categorização
+  category                String?                 // alimentacao, entretenimento, servicos, etc.
+  featured                Boolean                 @default(false)
+
+  // Status
+  isActive                Boolean                 @default(true)
+
+  // Relacionamentos
+  codes                   VoucherCode[]
+  redemptions             VoucherRedemption[]
+
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+
+  @@index([partnerId])
+  @@index([settlementType])
+  @@index([isActive])
+  @@index([expirationDate])
+  @@index([category])
+}
+
+model VoucherCode {
+  id                      String                  @id @default(uuid())
+
+  // Relacionamento com Campanha
+  campaignId              String
+  campaign                VoucherCampaign         @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  // Código do Voucher (ex: "DESC-X99", "VBRZ-2024-ABC")
+  code                    String                  @unique
+
+  // Status
+  status                  VoucherCodeStatus       @default(AVAILABLE)
+
+  // Dados do Resgate (preenchidos após resgate)
+  redeemedById            String?                 // userId que resgatou
+  redeemedAt              DateTime?
+
+  // Validade individual (pode sobrescrever a campanha)
+  expiresAt               DateTime?
+
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+
+  // Relacionamento com Redemption
+  redemption              VoucherRedemption?
+
+  @@index([campaignId])
+  @@index([status])
+  @@index([code])
+}
+
+model VoucherRedemption {
+  id                      String                  @id @default(uuid())
+
+  // Relacionamentos
+  campaignId              String
+  campaign                VoucherCampaign         @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  voucherCodeId           String                  @unique
+  voucherCode             VoucherCode             @relation(fields: [voucherCodeId], references: [id], onDelete: Cascade)
+
+  // Usuário que resgatou
+  userId                  String
+  userWalletAddress       String                  // Endereço da carteira que pagou
+
+  // Transação Blockchain (CRÍTICO - prova do pagamento)
+  txHash                  String                  @unique // Hash da transação na blockchain
+  blockNumber             Int?
+  networkChainId          Int                     @default(137) // Polygon mainnet
+
+  // Valores
+  vbrzAmount              Decimal                 @db.Decimal(18, 8) // Quantidade de VBRz paga
+  settlementType          VoucherSettlementType   // Tipo de liquidação usado
+
+  // Endereço de destino (para auditoria)
+  destinationAddress      String                  // Dead address ou carteira do parceiro
+
+  // Status da transação
+  txStatus                String                  @default("pending") // pending, confirmed, failed
+  txConfirmedAt           DateTime?
+
+  // Dados do resgate
+  redeemedAt              DateTime                @default(now())
+  usedAt                  DateTime?               // Quando o cliente usou o voucher no parceiro
+
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+
+  @@index([campaignId])
+  @@index([userId])
+  @@index([txHash])
+  @@index([txStatus])
+}
+
+// ============================================
+// ERP - SERVICOS EXTERNOS (SUPPLIER 360)
+// ============================================
+
+model Supplier {
+  id              String          @id @default(uuid())
+
+  // Dados Cadastrais Completos
+  tradeName       String                           // Nome Fantasia
+  legalName       String?                          // Razao Social
+  taxId           String?                          // CNPJ ou CPF
+  personType      PersonType      @default(JURIDICA) // FISICA ou JURIDICA
+  stateRegistration String?                        // Inscricao Estadual
+  municipalRegistration String?                    // Inscricao Municipal
+
+  // Campos legados (deprecated - usar os novos)
+  name            String?                          // @deprecated - usar tradeName
+  cnpj            String?                          // @deprecated - usar taxId
+
+  // Categoria e Avaliacao
+  category        String?                          // vistoria, reforma, limpeza, mudanca, etc.
+  rating          Float           @default(0)
+
+  // Contato Principal (legacy - preferir SupplierContact)
+  phone           String?
+  email           String?
+
+  // Relacionamento com Agencia
+  agencyId        String
+  agency          Agency          @relation(fields: [agencyId], references: [id])
+
+  // Relacionamentos 360
+  addresses       SupplierAddress[]
+  bankAccounts    SupplierBankAccount[]
+  contacts        SupplierContact[]
+
+  // Relacionamentos de Negocios
+  serviceOrders   ServiceOrder[]
+  accountsPayable AccountsPayable[] @relation("SupplierPayables")
+
+  isActive        Boolean         @default(true)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([agencyId])
+  @@index([category])
+  @@index([isActive])
+  @@index([taxId])
+  @@index([personType])
+}
+
+// Endereco do Fornecedor (1:N)
+model SupplierAddress {
+  id              String          @id @default(uuid())
+
+  // Relacionamento
+  supplierId      String
+  supplier        Supplier        @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  // Tipo de Endereco
+  type            AddressType     @default(COMMERCIAL) // COMMERCIAL, DELIVERY, BILLING
+
+  // Dados do Endereco
+  street          String                           // Rua/Logradouro
+  number          String                           // Numero
+  complement      String?                          // Complemento
+  neighborhood    String                           // Bairro
+  city            String                           // Cidade
+  state           String                           // UF (2 caracteres)
+  zipCode         String                           // CEP
+  country         String          @default("BR")   // Pais
+
+  // Principal?
+  isPrimary       Boolean         @default(false)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([supplierId])
+  @@index([type])
+}
+
+// Conta Bancaria do Fornecedor (1:N)
+model SupplierBankAccount {
+  id              String          @id @default(uuid())
+
+  // Relacionamento
+  supplierId      String
+  supplier        Supplier        @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  // Dados Bancarios
+  bankCode        String                           // Codigo do banco (ex: 001, 341)
+  bankName        String?                          // Nome do banco
+  agencyNumber    String                           // Numero da agencia
+  accountNumber   String                           // Numero da conta
+  accountType     BankAccountType @default(CHECKING) // CHECKING, SAVINGS
+
+  // Dados PIX
+  pixKey          String?                          // Chave PIX
+  pixKeyType      PixKeyType?                      // Tipo da chave PIX
+
+  // Titular
+  holderName      String?                          // Nome do titular
+  holderDocument  String?                          // CPF/CNPJ do titular
+
+  // Principal?
+  isPrimary       Boolean         @default(false)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([supplierId])
+}
+
+// Contato do Fornecedor (1:N)
+model SupplierContact {
+  id              String          @id @default(uuid())
+
+  // Relacionamento
+  supplierId      String
+  supplier        Supplier        @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  // Dados do Contato
+  name            String                           // Nome do contato
+  role            String?                          // Cargo (ex: Gerente, Financeiro)
+  email           String?                          // Email
+  phone           String?                          // Telefone fixo
+  mobile          String?                          // Celular/WhatsApp
+  department      String?                          // Departamento
+
+  // Principal?
+  isPrimary       Boolean         @default(false)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([supplierId])
+}
+
+enum PersonType {
+  FISICA                          // Pessoa Fisica (CPF)
+  JURIDICA                        // Pessoa Juridica (CNPJ)
+}
+
+enum AddressType {
+  COMMERCIAL                      // Endereco Comercial
+  DELIVERY                        // Endereco de Entrega
+  BILLING                         // Endereco de Cobranca
+}
+
+enum PixKeyType {
+  CPF                             // CPF
+  CNPJ                            // CNPJ
+  EMAIL                           // Email
+  PHONE                           // Telefone
+  RANDOM                          // Chave Aleatoria
+}
+
+model ServiceOrder {
+  id              String              @id @default(uuid())
+
+  // Relacionamentos
+  supplierId      String
+  supplier        Supplier            @relation(fields: [supplierId], references: [id])
+
+  propertyId      String?
+
+  agencyId        String
+  agency          Agency              @relation(fields: [agencyId], references: [id])
+
+  // Dados do serviço
+  description     String?
+  status          ServiceOrderStatus  @default(PENDING)
+  cost            Decimal             @db.Decimal(12, 2)
+  date            DateTime            @default(now())
+  completedAt     DateTime?
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([supplierId])
+  @@index([agencyId])
+  @@index([status])
+  @@index([date])
+}
+
+enum ServiceOrderStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// ============================================
+// ERP - SEGUROS
+// ============================================
+
+model InsurancePolicy {
+  id              String          @id @default(uuid())
+
+  type            InsurancePolicyType
+  value           Decimal         @db.Decimal(12, 2)
+  expirationDate  DateTime
+  active          Boolean         @default(true)
+
+  // Dados adicionais
+  policyNumber    String?
+  insurerName     String?
+
+  // Relacionamento com Agência
+  agencyId        String
+  agency          Agency          @relation(fields: [agencyId], references: [id])
+
+  // Relacionamentos
+  claims          Claim[]
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([agencyId])
+  @@index([type])
+  @@index([active])
+  @@index([expirationDate])
+}
+
+model Claim {
+  id              String          @id @default(uuid())
+
+  // Relacionamento com apólice
+  policyId        String
+  policy          InsurancePolicy @relation(fields: [policyId], references: [id])
+
+  // Relacionamento com Agência
+  agencyId        String
+  agency          Agency          @relation(fields: [agencyId], references: [id])
+
+  // Dados do sinistro
+  status          ClaimStatus     @default(OPEN)
+  amount          Decimal         @db.Decimal(12, 2)
+  date            DateTime        @default(now())
+  description     String?
+
+  resolvedAt      DateTime?
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([policyId])
+  @@index([agencyId])
+  @@index([status])
+  @@index([date])
+}
+
+enum InsurancePolicyType {
+  FIRE
+  RENTAL_GUARANTEE
+  CIVIL_LIABILITY
+  CONTENT
+  OTHER
+}
+
+enum ClaimStatus {
+  OPEN
+  UNDER_ANALYSIS
+  APPROVED
+  REJECTED
+  PAID
+}
+
+// ============================================
+// ERP - SUPORTE
+// ============================================
+
+model SupportTicket {
+  id              String              @id @default(uuid())
+
+  subject         String
+  status          SupportTicketStatus @default(OPEN)
+  priority        Priority            @default(MEDIUM)
+
+  // NPS e Satisfação
+  npsScore        Int?                // 0-10
+
+  // Dados do solicitante
+  contactName     String?
+  contactEmail    String?
+  contactPhone    String?
+
+  description     String?             @db.Text
+
+  // Relacionamento com Agência
+  agencyId        String
+  agency          Agency              @relation(fields: [agencyId], references: [id])
+
+  resolvedAt      DateTime?
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([agencyId])
+  @@index([status])
+  @@index([npsScore])
+}
+
+enum SupportTicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+// ============================================
+// P2P MARKETPLACE - CESSÃO DE CRÉDITO DIGITAL
+// Sistema de negociação de recebíveis de aluguel
+// Compliance: Art. 286-298 Código Civil (Cessão de Crédito)
+// NÃO é Valor Mobiliário (CVM) - é troca de ativos P2P
+// ============================================
+
+model P2PListing {
+  id                String          @id @default(uuid())
+
+  // Contrato de origem (cujos recebíveis serão vendidos)
+  contractId        String
+  contract          RentContract    @relation(fields: [contractId], references: [id])
+
+  // Token de Recebíveis (ERC-1155)
+  receivableTokenId String          // ID do token no smart contract VinculoReceivables
+  receivableContract String         // Endereço do smart contract VinculoReceivables
+
+  // Vendedor (Proprietário original)
+  sellerId          String          // ID do usuário vendedor
+  sellerWallet      String          // Endereço da carteira do vendedor
+
+  // Dados da Oferta
+  totalMonths       Int             // Quantos meses de recebíveis
+  monthlyValue      Decimal         @db.Decimal(12, 2) // Valor mensal do aluguel
+  faceValue         Decimal         @db.Decimal(12, 2) // Valor de face (total dos recebíveis)
+  askingPrice       Decimal         @db.Decimal(12, 2) // Preço pedido (com deságio)
+  discountPercent   Decimal         @db.Decimal(5, 2)  // Percentual de deságio aplicado
+
+  // Período dos recebíveis
+  startMonth        DateTime        // Primeiro mês cedido
+  endMonth          DateTime        // Último mês cedido
+
+  // Dados do Inquilino (para análise de risco)
+  tenantScore       Int?            // Score de crédito do inquilino (0-100)
+  paymentHistory    Json?           // Histórico de pagamentos (para análise)
+  contractGuarantee String?         // Tipo de garantia do contrato
+
+  // Preços aceitos
+  priceNative       Decimal?        @db.Decimal(28, 18) // Preço em MATIC (wei)
+  priceStable       Decimal?        @db.Decimal(12, 6)  // Preço em USDT/USDC
+
+  // Blockchain
+  listingIdOnChain  String?         // ID da oferta no smart contract VinculoP2P
+  escrowTxHash      String?         // Hash da transação de depósito no escrow
+
+  // Status
+  status            P2PListingStatus @default(PENDING)
+
+  // Venda
+  buyerId           String?         // ID do usuário comprador (se vendido)
+  buyerWallet       String?         // Carteira do comprador
+  soldPrice         Decimal?        @db.Decimal(12, 2)  // Preço efetivo de venda
+  soldAt            DateTime?       // Data da venda
+  saleTxHash        String?         // Hash da transação de venda
+
+  // Taxa da plataforma
+  platformFee       Decimal?        @db.Decimal(12, 2) // Taxa cobrada
+
+  // Metadados
+  metadataUri       String?         // IPFS URI com metadados do token
+  notes             String?         // Observações do vendedor
+
+  // Transações
+  transactions      P2PTransaction[]
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([contractId])
+  @@index([sellerId])
+  @@index([buyerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum P2PListingStatus {
+  PENDING           // Aguardando aprovação/tokenização
+  ACTIVE            // Disponível para compra
+  SOLD              // Vendido
+  CANCELLED         // Cancelado pelo vendedor
+  EXPIRED           // Período expirou
+}
+
+// Regra de Split Dinâmica - Atualizada após venda P2P
+model ContractSplitRule {
+  id                String          @id @default(uuid())
+
+  // Contrato afetado
+  contractId        String
+  // contract          RentContract    @relation(fields: [contractId], references: [id])
+
+  // Novo recebedor (investidor que comprou os recebíveis)
+  recipientId       String          // ID do usuário recebedor
+  recipientType     String          // OWNER | INVESTOR | GUARANTOR | PLATFORM
+  recipientWalletId String?         // ID da subconta Asaas
+  recipientPixKey   String?         // Chave PIX alternativa
+
+  // Período de vigência
+  startDate         DateTime        // Início da regra
+  endDate           DateTime        // Fim da regra
+
+  // Percentual ou valor fixo
+  sharePercent      Decimal?        @db.Decimal(5, 4) // Ex: 0.85 = 85%
+  fixedAmount       Decimal?        @db.Decimal(12, 2) // Valor fixo mensal
+
+  // Prioridade (para resolver conflitos)
+  priority          Int             @default(0)
+
+  // Origem da regra
+  sourceType        String          // P2P_SALE | NFT_LOAN | MANUAL
+  sourceId          String?         // ID da venda P2P ou empréstimo
+
+  // Status
+  isActive          Boolean         @default(true)
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([contractId])
+  @@index([recipientId])
+  @@index([startDate])
+  @@index([endDate])
+  @@index([isActive])
+}
+
+// Histórico de Transações P2P (para auditoria)
+model P2PTransaction {
+  id                String          @id @default(uuid())
+
+  // Listagem relacionada
+  listingId         String
+  listing           P2PListing      @relation(fields: [listingId], references: [id])
+
+  // Partes
+  sellerId          String
+  buyerId           String
+
+  // Valores
+  amount            Decimal         @db.Decimal(12, 2)
+  platformFee       Decimal         @db.Decimal(12, 2)
+  netToSeller       Decimal         @db.Decimal(12, 2)
+
+  // Pagamento
+  paymentMethod     String          // NATIVE | STABLE | PIX
+  paymentReference  String?         // Referência externa (PIX EndToEnd, etc.)
+
+  // Blockchain
+  txHash            String?         // Hash da transação
+  blockNumber       Int?            // Número do bloco
+  gasUsed           Decimal?        @db.Decimal(28, 0)
+
+  // Status
+  status            P2PTransactionStatus @default(PENDING)
+
+  createdAt         DateTime        @default(now())
+  confirmedAt       DateTime?
+
+  @@index([listingId])
+  @@index([sellerId])
+  @@index([buyerId])
+  @@index([status])
+  @@index([txHash])
+}
+
+enum P2PTransactionStatus {
+  PENDING           // Aguardando confirmação
+  CONFIRMED         // Confirmado na blockchain
+  FAILED            // Falhou
+}
+
+// Investidor (Perfil de quem compra recebíveis)
+model Investor {
+  id                String          @id @default(uuid())
+
+  // Usuário base
+  userId            String          @unique
+  // user              User            @relation(fields: [userId], references: [id])
+
+  // Dados KYC
+  kycStatus         String          @default("PENDING") // PENDING | APPROVED | REJECTED
+  kycVerifiedAt     DateTime?
+  investorType      String          @default("PF") // PF | PJ | QUALIFIED
+
+  // Limites
+  monthlyLimit      Decimal?        @db.Decimal(12, 2) // Limite mensal de compra
+  totalInvested     Decimal         @default(0) @db.Decimal(12, 2) // Total já investido
+
+  // Carteira
+  primaryWallet     String?         // Carteira principal para recebimento
+  asaasWalletId     String?         // Subconta Asaas para receber splits
+
+  // Preferências
+  minTenantScore    Int?            // Score mínimo aceito do inquilino
+  maxDiscountPercent Decimal?       @db.Decimal(5, 2) // Deságio máximo aceito
+  preferredCities   String[]        // Cidades preferidas
+
+  // Estatísticas
+  totalPurchases    Int             @default(0)
+  totalReceived     Decimal         @default(0) @db.Decimal(12, 2)
+  averageYield      Decimal?        @db.Decimal(5, 2) // Rendimento médio
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([kycStatus])
+  @@index([investorType])
+}
+
+// ============================================
+// INVESTMENT ORDER - Pedidos de Investimento
+// "Caixa da Loja" - Rastreia compras via Pix
+// Usuário vê Reais, blockchain é invisível
+// ============================================
+
+model InvestmentOrder {
+  id                String                  @id @default(uuid())
+
+  // Comprador (Investidor)
+  userId            String                  // Quem está comprando
+  // user              User                    @relation(fields: [userId], references: [id])
+
+  // O que está comprando (Listing do P2P)
+  listingId         String
+  // listing           P2PListing              @relation(fields: [listingId], references: [id])
+
+  // Quantidade de tokens (fracionamento futuro)
+  amountInTokens    Int                     @default(1) // Por ora, sempre 1 (oferta inteira)
+
+  // Valores
+  totalPrice        Decimal                 @db.Decimal(12, 2) // Preço total em Reais
+  platformFee       Decimal?                @db.Decimal(12, 2) // Taxa da plataforma
+
+  // Pagamento Asaas
+  asaasPaymentId    String?                 // ID da cobrança no Asaas
+  asaasCustomerId   String?                 // ID do cliente no Asaas
+  pixQrCode         String?                 @db.Text // QR Code Pix (base64 ou copia/cola)
+  pixQrCodeImage    String?                 @db.Text // Imagem do QR Code em base64
+  pixExpiresAt      DateTime?               // Quando o Pix expira
+
+  // Status do Pedido
+  status            InvestmentOrderStatus   @default(PENDING)
+  // PENDING -> AWAITING_PAYMENT -> PAID -> SETTLING -> COMPLETED
+  // ou -> EXPIRED, FAILED, CANCELLED
+
+  // Blockchain (invisível ao usuário)
+  txHash            String?                 // Hash da transação de transferência de tokens
+  blockNumber       Int?                    // Número do bloco
+  settledAt         DateTime?               // Quando os tokens foram transferidos
+
+  // Referências
+  externalReference String?                 // Referência única para rastrear no webhook (INV:uuid)
+
+  // Metadata
+  notes             String?
+  errorMessage      String?                 // Mensagem de erro (se falhou)
+
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  paidAt            DateTime?               // Quando o pagamento foi confirmado
+
+  @@index([userId])
+  @@index([listingId])
+  @@index([status])
+  @@index([asaasPaymentId])
+  @@index([externalReference])
+  @@index([createdAt])
+}
+
+enum InvestmentOrderStatus {
+  PENDING           // Pedido criado, aguardando gerar Pix
+  AWAITING_PAYMENT  // Pix gerado, aguardando pagamento
+  PAID              // Pagamento confirmado, aguardando liquidação blockchain
+  SETTLING          // Transferência blockchain em andamento
+  COMPLETED         // Tokens transferidos, investimento concluído
+  EXPIRED           // Pix expirou sem pagamento
+  FAILED            // Falha na liquidação blockchain
+  CANCELLED         // Cancelado pelo usuário ou admin
+}
+
+// ============================================
+// MÓDULO FINANCEIRO V2 - FRONTEND INTEGRATION
+// ============================================
+
+model SystemSettings {
+  id                    String   @id @default(uuid())
+
+  // Taxas do Sistema (Configuradas pelo SuperAdmin)
+  platformFee           Float    @default(0.05)          // Taxa da plataforma (5%)
+  insuranceFee          Float    @default(0.03)          // Taxa de seguro (3%)
+  guarantorFee          Float    @default(0.05)          // Taxa do garantidor (5%)
+  agencyCommissionRate  Float    @default(0.10)          // Comissão padrão da agência (10%)
+  realtorCommissionSplit Float   @default(0.50)          // Divisão corretor/agência (50%)
+
+  // Metadados
+  updatedBy             String?                          // ID do admin que atualizou
+  notes                 String?
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Realtor {
+  id                    String   @id @default(uuid())
+
+  // Dados Pessoais
+  name                  String
+  creci                 String   @unique                 // Registro CRECI obrigatório
+  email                 String
+  phone                 String
+  cpf                   String?  @unique
+
+  // Relacionamento com Agência
+  agencyId              String?
+  agency                Agency?  @relation("AgencyRealtors", fields: [agencyId], references: [id])
+
+  // Status
+  active                Boolean  @default(true)
+  hireDate              DateTime @default(now())
+  terminationDate       DateTime?
+
+  // Comissões
+  customCommissionSplit Float?                           // Sobrescreve o padrão do sistema
+  totalEarned           Decimal  @default(0) @db.Decimal(12, 2)
+
+  // Dados Bancários (PIX para repasse)
+  pixKey                String?
+  pixKeyType            String?                          // CPF, EMAIL, PHONE, RANDOM
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([creci])
+  @@index([active])
+}
+
+model BankAccount {
+  id                    String   @id @default(uuid())
+
+  // Dados da Conta
+  name                  String                           // Nome/apelido (ex: "Conta Operacional BB")
+  bankName              String                           // Nome do banco (ex: "Banco do Brasil")
+  agencyNumber          String                           // Número da agência bancária (ex: "0001")
+  accountNumber         String                           // Número da conta
+  type                  BankAccountType                  // CHECKING, SAVINGS, GATEWAY
+
+  // Saldo
+  balance               Decimal  @db.Decimal(12, 2)      // Saldo atual
+
+  // Relacionamento com Agência (Imobiliária)
+  agencyId              String?
+  agency                Agency?  @relation("AgencyBankAccounts", fields: [agencyId], references: [id])
+
+  // Status
+  active                Boolean  @default(true)
+
+  // Metadados
+  notes                 String?
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([active])
+}
+
+enum BankAccountType {
+  CHECKING              // Conta Corrente
+  SAVINGS               // Conta Poupança
+  GATEWAY               // Conta Gateway de Pagamento (Asaas, etc)
+}
+
+model AccountsPayable {
+  id                    String              @id @default(uuid())
+
+  // Dados da Despesa
+  description           String
+  amount                Decimal             @db.Decimal(12, 2)
+  dueDate               DateTime
+  status                FinancialStatus     @default(PENDING)
+
+  // Fornecedor (Relação Real)
+  supplierId            String?
+  supplier              Supplier?           @relation("SupplierPayables", fields: [supplierId], references: [id])
+  supplierName          String?                          // Fallback: texto livre se não for cadastrado
+
+  // Categoria DRE (Relação Real)
+  categoryId            String?
+  financialCategory     FinancialCategory?  @relation("CategoryPayables", fields: [categoryId], references: [id])
+  category              String?                          // Fallback: texto livre se não for cadastrado
+
+  // Pagamento
+  paymentDate           DateTime?
+  paymentMethod         String?                          // PIX, BOLETO, TRANSFERÊNCIA
+  barcode               String?                          // Código de barras do boleto
+
+  // Recorrência
+  isRecurring           Boolean             @default(false)
+  recurrenceInterval    String?                          // MONTHLY, YEARLY
+
+  // Relacionamento com Agência
+  agencyId              String?
+  agency                Agency?             @relation("AgencyPayables", fields: [agencyId], references: [id])
+
+  // Metadados
+  notes                 String?
+  attachments           String[]            @default([])  // URLs de comprovantes
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@index([agencyId])
+  @@index([status])
+  @@index([dueDate])
+  @@index([supplierId])
+}
+
+model AccountsReceivable {
+  id                    String              @id @default(uuid())
+
+  // Dados da Receita
+  description           String
+  amount                Decimal             @db.Decimal(12, 2)
+  dueDate               DateTime
+  status                FinancialStatus     @default(PENDING)
+
+  // Origem
+  origin                String?                          // Ex: "João Silva (Inquilino)", "Venda de Imóvel"
+  clientType            String?                          // TENANT, OWNER, BUYER, OTHER
+
+  // Tipo de Entrada
+  type                  ReceivableType      @default(MANUAL)
+
+  // Recebimento
+  receivedDate          DateTime?
+  receivedAmount        Decimal?            @db.Decimal(12, 2)
+  paymentMethod         String?                          // PIX, BOLETO, TRANSFERÊNCIA
+
+  // Relacionamento com Agência
+  agencyId              String?
+  agency                Agency?             @relation("AgencyReceivables", fields: [agencyId], references: [id])
+
+  // Metadados
+  notes                 String?
+  attachments           String[]            @default([])  // URLs de comprovantes
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@index([agencyId])
+  @@index([status])
+  @@index([dueDate])
+  @@index([type])
+}
+
+enum FinancialStatus {
+  PENDING               // Pendente
+  PAID                  // Pago
+  OVERDUE               // Vencido
+  CANCELLED             // Cancelado
+  PARTIAL               // Parcialmente pago
+}
+
+enum ReceivableType {
+  MANUAL                // Entrada manual
+  BOLETO                // Boleto bancário
+  MARKETPLACE           // Venda via marketplace
+  RENTAL                // Aluguel (integrado com contratos)
+}
+
+// ============================================
+// FINANCIAL CATEGORY (Plano de Contas / DRE)
+// Estrutura Hierarquica com Sintetico/Analitico
+// ============================================
+
+model FinancialCategory {
+  id                    String              @id @default(uuid())
+
+  // Dados da Categoria
+  name                  String                           // Nome da categoria (ex: "Manutenção", "Marketing")
+  code                  String?                          // Código contábil hierárquico (ex: "4.1.01")
+  description           String?                          // Descrição detalhada
+
+  // Classificacao Contabil
+  type                  FinancialCategoryType            // EXPENSE ou INCOME
+  categoryType          CategoryAccountType @default(ANALYTICAL) // SYNTHETIC (grupo) ou ANALYTICAL (lançável)
+  nature                CategoryNature      @default(DEBIT)      // DEBIT ou CREDIT
+
+  // Hierarquia (Arvore)
+  level                 Int                 @default(1)  // Nivel na arvore (1=raiz, 2=filho, 3=neto, etc.)
+  parentId              String?
+  parent                FinancialCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children              FinancialCategory[] @relation("CategoryHierarchy")
+
+  // Path para facilitar queries (ex: "/uuid1/uuid2/uuid3")
+  path                  String?                          // Caminho completo na arvore
+
+  // Relacionamento com Agencia
+  agencyId              String?
+
+  // Status
+  isActive              Boolean             @default(true)
+
+  // Relacionamentos
+  accountsPayable       AccountsPayable[]   @relation("CategoryPayables")
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@index([agencyId])
+  @@index([type])
+  @@index([categoryType])
+  @@index([isActive])
+  @@index([parentId])
+  @@index([level])
+  @@index([code])
+}
+
+enum FinancialCategoryType {
+  EXPENSE               // Despesa
+  INCOME                // Receita
+}
+
+enum CategoryAccountType {
+  SYNTHETIC             // Conta Sintetica (grupo, nao recebe lancamentos)
+  ANALYTICAL            // Conta Analitica (recebe lancamentos diretamente)
+}
+
+enum CategoryNature {
+  DEBIT                 // Natureza Devedora
+  CREDIT                // Natureza Credora
+}

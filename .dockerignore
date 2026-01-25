@@ -1,0 +1,79 @@
+# ============================================
+# DOCKER IGNORE
+# Arquivos que nao devem ser copiados para a imagem
+# ============================================
+
+# Dependencies
+node_modules
+server/node_modules
+contracts/node_modules
+
+# Build outputs (serao gerados no container)
+dist
+build
+.next
+
+# Environment files (nunca incluir secrets na imagem!)
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Testes
+coverage
+.nyc_output
+*.spec.ts
+*.test.ts
+__tests__
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Git
+.git
+.gitignore
+
+# Docs
+*.md
+!README.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporarios
+tmp
+temp
+*.tmp
+
+# Docker files (nao copiar para dentro da imagem)
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# WhatsApp sessions (dados sensiveis)
+whatsapp-sessions
+
+# Uploads (montados via volume)
+uploads
+
+# Backups
+*.bak
+*.backup
+
+# Cache
+.cache
+.turbo
+.parcel-cache

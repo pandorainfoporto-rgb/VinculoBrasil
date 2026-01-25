@@ -1,0 +1,95 @@
+<svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hexágono externo - estilo Polygon (Vinculo Brasil) -->
+  <polygon
+    points="256,25 477,140 477,372 256,487 35,372 35,140"
+    fill="url(#hexGradient)"
+    stroke="url(#strokeGradient)"
+    stroke-width="15"
+  />
+
+  <!-- Casa estilizada dentro do hexágono -->
+  <!-- Telhado da casa - triângulo -->
+  <polygon
+    points="256,112 384,215 128,215"
+    fill="#FFFFFF"
+  />
+
+  <!-- Corpo da casa - retângulo -->
+  <rect
+    x="153"
+    y="215"
+    width="206"
+    height="164"
+    fill="#FFFFFF"
+  />
+
+  <!-- Porta -->
+  <rect
+    x="225"
+    y="266"
+    width="62"
+    height="113"
+    fill="url(#doorGradient)"
+    rx="5"
+  />
+
+  <!-- Maçaneta da porta -->
+  <circle cx="275" cy="325" r="6" fill="#FFFFFF" />
+
+  <!-- Janela esquerda -->
+  <rect
+    x="168"
+    y="245"
+    width="41"
+    height="41"
+    fill="url(#windowGradient)"
+    rx="5"
+  />
+
+  <!-- Janela direita -->
+  <rect
+    x="303"
+    y="245"
+    width="41"
+    height="41"
+    fill="url(#windowGradient)"
+    rx="5"
+  />
+
+  <!-- Chaminé -->
+  <rect
+    x="310"
+    y="133"
+    width="31"
+    height="62"
+    fill="#FFFFFF"
+  />
+
+  <!-- Gradientes -->
+  <defs>
+    <!-- Gradiente do hexágono - verde brasileiro -->
+    <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22C55E" />
+      <stop offset="50%" stop-color="#16A34A" />
+      <stop offset="100%" stop-color="#15803D" />
+    </linearGradient>
+
+    <!-- Gradiente do stroke - amarelo brasileiro -->
+    <linearGradient id="strokeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+
+    <!-- Gradiente da porta -->
+    <linearGradient id="doorGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#16A34A" />
+      <stop offset="100%" stop-color="#15803D" />
+    </linearGradient>
+
+    <!-- Gradiente das janelas -->
+    <linearGradient id="windowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D" />
+      <stop offset="100%" stop-color="#FBBF24" />
+    </linearGradient>
+  </defs>
+</svg>

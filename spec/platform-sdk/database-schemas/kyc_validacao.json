@@ -1,0 +1,121 @@
+{
+  "id": "102019b933125777281ab0b7455cce3cdb0",
+  "version": "102019b933125777011b15f1cbf27919f2b",
+  "schema": {
+    "name": "kyc_validacao",
+    "description": "Entity representing KYC validations for users",
+    "fields": [
+      {
+        "name": "id",
+        "description": "Unique identifier for the KYC record (kyc_id)",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System identifier"
+        }
+      },
+      {
+        "name": "data_creator",
+        "description": "id of the user who creates the record",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Audit trail"
+        }
+      },
+      {
+        "name": "data_updater",
+        "description": "id of the user who updates the record",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Audit trail"
+        }
+      },
+      {
+        "name": "create_time",
+        "description": "create time in timestamp unix",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System metadata"
+        },
+        "format": "timestamp"
+      },
+      {
+        "name": "update_time",
+        "description": "update time in timestamp unix",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System metadata"
+        },
+        "format": "timestamp"
+      },
+      {
+        "name": "user_id",
+        "description": "ID of the user undergoing validation",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Relationship identifier"
+        }
+      }
+    ],
+    "indexes": [
+      {
+        "fields": [
+          "id"
+        ],
+        "unique": true,
+        "primary": true,
+        "order": false
+      },
+      {
+        "fields": [
+          "user_id"
+        ],
+        "order": false
+      },
+      {
+        "fields": [
+          "data_creator"
+        ],
+        "order": false
+      },
+      {
+        "fields": [
+          "data_updater"
+        ],
+        "order": false
+      }
+    ],
+    "relations": [
+      {
+        "referencing_fields": [
+          "user_id"
+        ],
+        "referenced_entity": {
+          "name": "usuario"
+        },
+        "referenced_fields": [
+          "id"
+        ],
+        "cascade": true
+      }
+    ]
+  },
+  "task": {
+    "id": "695cf5ec871aac6392e3a5b3",
+    "root": "695cef7bc0662b03161297fc",
+    "project": "695cef7bc0662b03161297fb",
+    "user": "a8911360-1081-700d-f06d-07e3591f1d58"
+  },
+  "namespace": {
+    "id": "01987547fc6c72ecb453bd2736bd4ea0",
+    "tenant": 2,
+    "name": "global-1",
+    "default": true
+  },
+  "revision": 1
+}

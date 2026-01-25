@@ -1,0 +1,138 @@
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_CREATE_TASK
+
+Here is the input and output schema info of Tool SALESFORCE_CREATE_TASK of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"activity_date":{"type":"string","description":"Due date for the task in YYYY-MM-DD format.","title":"Activity Date","default":null,"nullable":true,"examples":["2025-12-31","2025-09-15"]},"description":{"type":"string","description":"Detailed description or notes for the task.","title":"Description","default":"","examples":["Call to discuss renewal options","Follow up on pricing questions from last meeting","Send updated proposal with discount options"]},"is_reminder_set":{"type":"boolean","description":"Whether to set a reminder for this task.","title":"Is Reminder Set","default":false},"owner_id":{"type":"string","description":"ID of the user who owns the task. Defaults to current user if not specified.","title":"Owner Id","default":"","examples":["005XXXXXXXXXXXXXXX"]},"priority":{"type":"string","description":"Priority level of the task.","title":"Priority","default":"Normal","examples":["High","Normal","Low"]},"reminder_date_time":{"type":"string","description":"Date and time for the reminder in ISO format (YYYY-MM-DDTHH:MM:SS). Required if is_reminder_set is true.","title":"Reminder Date Time","default":null,"nullable":true,"examples":["2025-12-30T09:00:00","2025-09-14T14:30:00"]},"status":{"type":"string","description":"Status of the task.","title":"Status","default":"Not Started","examples":["Not Started","In Progress","Completed","Waiting on someone else","Deferred"]},"subject":{"type":"string","description":"Subject/title of the task.","title":"Subject","examples":["Follow up on opportunity","Call customer","Send proposal","Schedule meeting","Review contract"]},"what_id":{"type":"string","description":"ID of the related record (Account, Opportunity, Case, etc.) this task is associated with.","title":"What Id","default":"","examples":["001XXXXXXXXXXXXXXX","006XXXXXXXXXXXXXXX","500XXXXXXXXXXXXXXX"]},"who_id":{"type":"string","description":"ID of the Contact or Lead this task is associated with.","title":"Who Id","default":"","examples":["003XXXXXXXXXXXXXXX","00QXXXXXXXXXXXXXXX"]}},"required":["subject"],"title":"CreateTaskRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Response from Salesforce containing the new task ID, success status, and any errors.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"CreateTaskResponseWrapper"}
+schema info of SALESFORCE_CREATE_TASK ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_DELETE_ACCOUNT
+
+Here is the input and output schema info of Tool SALESFORCE_DELETE_ACCOUNT of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"account_id":{"type":"string","description":"The Salesforce ID of the account to delete.","title":"Account Id","examples":["001Wd00000BSLklIAH","001XXXXXXXXXXXXXXX"]}},"required":["account_id"],"title":"DeleteAccountRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw response from Salesforce API.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"DeleteAccountResponseWrapper"}
+schema info of SALESFORCE_DELETE_ACCOUNT ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_DELETE_A_LEAD_OBJECT_BY_ITS_ID
+
+Here is the input and output schema info of Tool SALESFORCE_DELETE_A_LEAD_OBJECT_BY_ITS_ID of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"id":{"type":"string","description":"The unique 15-character or 18-character ID of the Lead object to be deleted. Lead object IDs typically start with the prefix '00Q'. This is a required path parameter.","title":"Id","examples":["00Q4F000003WecmQAB","00Q5j000007tYqVEAU"]}},"required":["id"],"title":"DeleteALeadObjectByItsIdRequest","description":"Request schema for `DeleteALeadObjectByItsId`"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"DeleteALeadObjectByItsIdResponseWrapper"}
+schema info of SALESFORCE_DELETE_A_LEAD_OBJECT_BY_ITS_ID ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_DELETE_CAMPAIGN
+
+Here is the input and output schema info of Tool SALESFORCE_DELETE_CAMPAIGN of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"campaign_id":{"type":"string","description":"The Salesforce ID of the campaign to delete.","title":"Campaign Id","examples":["701Wd00000BVUYAIA5","701XXXXXXXXXXXXXXX"]}},"required":["campaign_id"],"title":"DeleteCampaignRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce API containing status information.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"DeleteCampaignResponseWrapper"}
+schema info of SALESFORCE_DELETE_CAMPAIGN ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_DELETE_CONTACT
+
+Here is the input and output schema info of Tool SALESFORCE_DELETE_CONTACT of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"contact_id":{"type":"string","description":"The Salesforce ID of the contact to delete.","title":"Contact Id","examples":["003Wd000005NK4rIAG","003XXXXXXXXXXXXXXX"]}},"required":["contact_id"],"title":"DeleteContactRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw response from Salesforce API.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"DeleteContactResponseWrapper"}
+schema info of SALESFORCE_DELETE_CONTACT ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_DELETE_LEAD
+
+Here is the input and output schema info of Tool SALESFORCE_DELETE_LEAD of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"lead_id":{"type":"string","description":"The Salesforce ID of the lead to delete.","title":"Lead Id","examples":["00QWd000005V3RmMAK","00QXXXXXXXXXXXXXXX"]}},"required":["lead_id"],"title":"DeleteLeadRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw response from Salesforce API.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"DeleteLeadResponseWrapper"}
+schema info of SALESFORCE_DELETE_LEAD ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_DELETE_NOTE
+
+Here is the input and output schema info of Tool SALESFORCE_DELETE_NOTE of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"note_id":{"type":"string","description":"The Salesforce ID of the note to delete.","title":"Note Id","examples":["002Wd000001UYbaIAG","002XXXXXXXXXXXXXXX"]}},"required":["note_id"],"title":"DeleteNoteRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw response from Salesforce API.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"DeleteNoteResponseWrapper"}
+schema info of SALESFORCE_DELETE_NOTE ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_DELETE_OPPORTUNITY
+
+Here is the input and output schema info of Tool SALESFORCE_DELETE_OPPORTUNITY of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"opportunity_id":{"type":"string","description":"The Salesforce ID of the opportunity to delete.","title":"Opportunity Id","examples":["006Wd000005FG3CIAW","006XXXXXXXXXXXXXXX"]}},"required":["opportunity_id"],"title":"DeleteOpportunityRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw response from Salesforce API.","title":"Response Data","additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"DeleteOpportunityResponseWrapper"}
+schema info of SALESFORCE_DELETE_OPPORTUNITY ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_EXECUTE_SOQL_QUERY
+
+Here is the input and output schema info of Tool SALESFORCE_EXECUTE_SOQL_QUERY of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"soql_query":{"type":"string","description":"The SOQL (Salesforce Object Query Language) query to execute. Example: 'SELECT Id, Name, Email FROM Contact WHERE Name LIKE '%John%' LIMIT 10'. Make sure to follow SOQL syntax and escape single quotes properly.","title":"Soql Query","minLength":10,"examples":["SELECT Id, Name, Email FROM Contact WHERE Name LIKE '%John%'","SELECT Id, Name, Industry FROM Account WHERE Industry = 'Technology'","SELECT Id, Name, Amount, StageName FROM Opportunity WHERE CloseDate = THIS_MONTH"]}},"required":["soql_query"],"title":"ExecuteSoqlQueryRequest","description":"Request schema for `ExecuteSoqlQuery`"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"A dictionary representing the raw SOQL query results from Salesforce. This typically includes a list of records (under a key like 'records') and the total number of records. The exact structure and fields depend on the executed SOQL query.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"ExecuteSoqlQueryResponseWrapper"}
+schema info of SALESFORCE_EXECUTE_SOQL_QUERY ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_FETCH_ACCOUNT_BY_ID_WITH_QUERY
+
+Here is the input and output schema info of Tool SALESFORCE_FETCH_ACCOUNT_BY_ID_WITH_QUERY of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"fields":{"type":"string","description":"Optional comma-delimited list of Account field names to retrieve (e.g., 'Name,BillingCity,Industry'). If unspecified, null, or empty, all accessible Account fields are returned.","title":"Fields","examples":["Name,AnnualRevenue,Industry","BillingStreet,BillingCity,BillingState","OwnerId,CreatedDate,LastModifiedDate"]},"id":{"type":"string","description":"Unique identifier (ID) of the Salesforce Account to retrieve.","title":"Id","examples":["001R0000005hDFYIA2"]}},"required":["id"],"title":"FetchAccountByIdWithQueryRequest","description":"Parameters to retrieve a Salesforce Account by ID, with optional selective field retrieval."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"FetchAccountByIdWithQueryResponseWrapper"}
+schema info of SALESFORCE_FETCH_ACCOUNT_BY_ID_WITH_QUERY ends.

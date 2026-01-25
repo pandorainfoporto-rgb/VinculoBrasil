@@ -1,0 +1,240 @@
+{
+  "id": "102019b9331257770eb86b99818e34f7c01",
+  "version": "102019b933125777011b15f1cbf27919f2b",
+  "schema": {
+    "name": "auditoria_blockchain",
+    "description": "Entity representing blockchain audit logs and transactions",
+    "fields": [
+      {
+        "name": "id",
+        "description": "Unique identifier for the audit record (audit_id)",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System identifier"
+        }
+      },
+      {
+        "name": "data_creator",
+        "description": "id of the user who creates the record",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Audit trail"
+        }
+      },
+      {
+        "name": "data_updater",
+        "description": "id of the user who updates the record",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Audit trail"
+        }
+      },
+      {
+        "name": "create_time",
+        "description": "create time in timestamp unix",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System metadata"
+        },
+        "format": "timestamp"
+      },
+      {
+        "name": "update_time",
+        "description": "update time in timestamp unix",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "System metadata"
+        },
+        "format": "timestamp"
+      },
+      {
+        "name": "entidade_tipo",
+        "description": "Type of the entity involved in the blockchain event",
+        "type": 100,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Classification"
+        },
+        "enumeration": [
+          {
+            "value": "Unspecified"
+          },
+          {
+            "number": 1,
+            "value": "Contrato"
+          },
+          {
+            "number": 2,
+            "value": "Transacao"
+          },
+          {
+            "number": 3,
+            "value": "Garantia"
+          },
+          {
+            "number": 4,
+            "value": "NFT"
+          }
+        ]
+      },
+      {
+        "name": "entidade_id",
+        "description": "ID of the specific entity involved",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Polymorphic reference"
+        }
+      },
+      {
+        "name": "acao",
+        "description": "Action performed on blockchain",
+        "type": 100,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Action type"
+        },
+        "enumeration": [
+          {
+            "value": "Unspecified"
+          },
+          {
+            "number": 1,
+            "value": "Mint"
+          },
+          {
+            "number": 2,
+            "value": "Transfer"
+          },
+          {
+            "number": 3,
+            "value": "Burn"
+          },
+          {
+            "number": 4,
+            "value": "Update"
+          },
+          {
+            "number": 5,
+            "value": "Lock"
+          },
+          {
+            "number": 6,
+            "value": "Unlock"
+          }
+        ]
+      },
+      {
+        "name": "hash_blockchain",
+        "description": "Transaction hash on the blockchain",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Public ledger reference"
+        }
+      },
+      {
+        "name": "gas_fee",
+        "description": "Gas fee cost for the transaction",
+        "type": 2,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Financial cost"
+        },
+        "numeric": "float"
+      },
+      {
+        "name": "user_id",
+        "description": "ID of the user initiating the action",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 1,
+          "reason": "Relationship identifier"
+        }
+      },
+      {
+        "name": "metadata",
+        "description": "Additional metadata in JSON format",
+        "type": 1,
+        "compliance": {
+          "confidentiality": 2,
+          "reason": "Extended audit details"
+        },
+        "nullable": true
+      }
+    ],
+    "indexes": [
+      {
+        "fields": [
+          "id"
+        ],
+        "unique": true,
+        "primary": true,
+        "order": false
+      },
+      {
+        "fields": [
+          "hash_blockchain"
+        ],
+        "unique": true,
+        "order": false
+      },
+      {
+        "fields": [
+          "user_id"
+        ],
+        "order": false
+      },
+      {
+        "fields": [
+          "entidade_id",
+          "entidade_tipo"
+        ],
+        "order": false
+      },
+      {
+        "fields": [
+          "data_creator"
+        ],
+        "order": false
+      },
+      {
+        "fields": [
+          "data_updater"
+        ],
+        "order": false
+      }
+    ],
+    "relations": [
+      {
+        "referencing_fields": [
+          "user_id"
+        ],
+        "referenced_entity": {
+          "name": "usuario"
+        },
+        "referenced_fields": [
+          "id"
+        ]
+      }
+    ]
+  },
+  "task": {
+    "id": "695cf5ec871aac6392e3a5b3",
+    "root": "695cef7bc0662b03161297fc",
+    "project": "695cef7bc0662b03161297fb",
+    "user": "a8911360-1081-700d-f06d-07e3591f1d58"
+  },
+  "namespace": {
+    "id": "01987547fc6c72ecb453bd2736bd4ea0",
+    "tenant": 2,
+    "name": "global-1",
+    "default": true
+  },
+  "revision": 1
+}

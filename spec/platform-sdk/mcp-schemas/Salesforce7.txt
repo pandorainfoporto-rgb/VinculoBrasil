@@ -1,0 +1,138 @@
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RETRIEVE_SPECIFIC_CAMPAIGN_OBJECT_DETAILS
+
+Here is the input and output schema info of Tool SALESFORCE_RETRIEVE_SPECIFIC_CAMPAIGN_OBJECT_DETAILS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"fields":{"type":"string","description":"Optional comma-delimited list of field API names for the Campaign object whose values you want to retrieve (e.g., 'name,description,numberofemployees,industry'). Field names are case-sensitive and should match Salesforce API names. If unspecified, all accessible fields are returned.","title":"Fields","default":null,"nullable":true,"examples":["name,description","name,description,numberofemployees,industry"]},"id":{"type":"string","description":"The unique identifier (ID) of the Salesforce Campaign object to retrieve. Example: '001R0000005hDFYIA2'.","title":"Id","examples":["001R0000005hDFYIA2"]}},"required":["id"],"title":"RetrieveSpecificCampaignObjectDetailsRequest","description":"Defines the request parameters for the action to retrieve specific details of a Salesforce Campaign object."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"A dictionary where keys are the field API names and values are their corresponding values for the retrieved Campaign object. The fields returned depend on the `fields` parameter in the request; if `fields` was not provided, all accessible fields are included.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RetrieveSpecificCampaignObjectDetailsResponseWrapper"}
+schema info of SALESFORCE_RETRIEVE_SPECIFIC_CAMPAIGN_OBJECT_DETAILS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RETRIEVE_SPECIFIC_CONTACT_BY_ID
+
+Here is the input and output schema info of Tool SALESFORCE_RETRIEVE_SPECIFIC_CONTACT_BY_ID of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"fields":{"type":"string","description":"Comma-delimited string of Contact field API names to retrieve. If omitted, a default set of fields is returned.","title":"Fields","default":null,"nullable":true,"examples":["Name,Email,Phone","FirstName,LastName,AccountId,Description"]},"id":{"type":"string","description":"The unique Salesforce ID of the Contact record to retrieve.","title":"Id","examples":["003R0000005hDFYIA2","0030K00002AmZYXQA3"]}},"required":["id"],"title":"RetrieveSpecificContactByIdRequest","description":"Request schema for retrieving a Salesforce Contact by ID."}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"A dictionary representing the Contact object, where keys are field API names (e.g., 'Id', 'Name', 'Email') and values are their corresponding data.","title":"Data","additionalProperties":true},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RetrieveSpecificContactByIdResponseWrapper"}
+schema info of SALESFORCE_RETRIEVE_SPECIFIC_CONTACT_BY_ID ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RUN_REPORT
+
+Here is the input and output schema info of Tool SALESFORCE_RUN_REPORT of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"report_id":{"type":"string","description":"The Salesforce ID of the report to run.","title":"Report Id","examples":["00OWd000001GtZ9MAK","00OXXXXXXXXXXXXXXX"]}},"required":["report_id"],"title":"RunReportRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Report instance information or error response.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"RunReportResponseWrapper"}
+schema info of SALESFORCE_RUN_REPORT ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_RUN_SOQL_QUERY
+
+Here is the input and output schema info of Tool SALESFORCE_RUN_SOQL_QUERY of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"query":{"type":"string","description":"SOQL query to execute. Use standard SOQL syntax.","title":"Query","examples":["SELECT Id, Name, Email FROM Contact WHERE CreatedDate > 2024-01-01T00:00:00Z","SELECT Name, (SELECT LastName FROM Contacts) FROM Account","SELECT COUNT() FROM Lead WHERE Status = 'New'","SELECT Id, Name FROM Opportunity ORDER BY Amount DESC LIMIT 10"]}},"required":["query"],"title":"ExecuteSoqlQueryRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Query results with totalSize, done flag, records array, and optional nextRecordsUrl for pagination, or error response.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"ExecuteSoqlQueryResponseWrapper"}
+schema info of SALESFORCE_RUN_SOQL_QUERY ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_SEARCH_ACCOUNTS
+
+Here is the input and output schema info of Tool SALESFORCE_SEARCH_ACCOUNTS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"billing_city":{"type":"string","description":"Search by billing city. Supports partial matches.","title":"Billing City","default":null,"nullable":true,"examples":["San Francisco","New York","Chicago"]},"billing_country":{"type":"string","description":"Search by billing country. Supports partial matches.","title":"Billing Country","default":null,"nullable":true,"examples":["United States","Canada","UK"]},"billing_state":{"type":"string","description":"Search by billing state/province. Supports partial matches.","title":"Billing State","default":null,"nullable":true,"examples":["CA","NY","Texas"]},"fields":{"type":"string","description":"Comma-separated list of Account fields to retrieve.","title":"Fields","default":"Id,Name,Type,Industry,Phone,Website,BillingStreet,BillingCity,BillingState,BillingCountry,NumberOfEmployees,AnnualRevenue","examples":["Id,Name,Type,Industry,Phone,Website","Id,Name,Type,Industry,Phone,Website,BillingCity,BillingState,NumberOfEmployees"]},"industry":{"type":"string","description":"Search by industry.","title":"Industry","default":null,"nullable":true,"examples":["Technology","Healthcare","Manufacturing","Financial Services"]},"limit":{"type":"integer","description":"Maximum number of accounts to return.","title":"Limit","default":50,"minimum":1,"maximum":2000},"name":{"type":"string","description":"Search by account name. Supports partial matches.","title":"Name","default":null,"nullable":true,"examples":["Acme Corp","Tech Solutions","Inc"]},"phone":{"type":"string","description":"Search by phone number. Supports partial matches.","title":"Phone","default":null,"nullable":true,"examples":["555-1234","(555)","1234"]},"type":{"type":"string","description":"Search by account type.","title":"Type","default":null,"nullable":true,"examples":["Customer - Direct","Customer - Channel","Prospect","Partner"]},"website":{"type":"string","description":"Search by website. Supports partial matches.","title":"Website","default":null,"nullable":true,"examples":["acme.com",".com","https://"]}},"title":"SearchAccountsRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce SOQL query containing matching accounts or error information.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"SearchAccountsResponseWrapper"}
+schema info of SALESFORCE_SEARCH_ACCOUNTS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_SEARCH_CAMPAIGNS
+
+Here is the input and output schema info of Tool SALESFORCE_SEARCH_CAMPAIGNS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"fields":{"type":"string","description":"Comma-separated list of Campaign fields to retrieve.","title":"Fields","default":"Id,Name,Type,Status,StartDate,EndDate,IsActive,Description,BudgetedCost,ActualCost,NumberOfContacts,NumberOfLeads","examples":["Id,Name,Type,Status,StartDate,EndDate","Id,Name,Type,Status,StartDate,EndDate,IsActive,BudgetedCost,ActualCost"]},"is_active":{"type":"boolean","description":"Filter by active status. True for active campaigns, False for inactive.","title":"Is Active","default":null,"nullable":true},"limit":{"type":"integer","description":"Maximum number of campaigns to return.","title":"Limit","default":50,"minimum":1,"maximum":2000},"name":{"type":"string","description":"Search by campaign name. Supports partial matches.","title":"Name","default":null,"nullable":true,"examples":["Summer Sale","Product Launch","Webinar"]},"start_date_from":{"type":"string","description":"Search campaigns starting from this date (YYYY-MM-DD).","title":"Start Date From","default":null,"nullable":true,"examples":["2024-01-01"]},"start_date_to":{"type":"string","description":"Search campaigns starting before this date (YYYY-MM-DD).","title":"Start Date To","default":null,"nullable":true,"examples":["2024-12-31"]},"status":{"type":"string","description":"Search by campaign status.","title":"Status","default":null,"nullable":true,"examples":["Planned","In Progress","Completed","Aborted"]},"type":{"type":"string","description":"Search by campaign type.","title":"Type","default":null,"nullable":true,"examples":["Email","Webinar","Trade Show","Public Relations"]}},"title":"SearchCampaignsRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce SOQL query containing matching campaigns or error information.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"SearchCampaignsResponseWrapper"}
+schema info of SALESFORCE_SEARCH_CAMPAIGNS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_SEARCH_CONTACTS
+
+Here is the input and output schema info of Tool SALESFORCE_SEARCH_CONTACTS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"account_name":{"type":"string","description":"Search by associated account name. Supports partial matches.","title":"Account Name","default":null,"nullable":true,"examples":["Acme Corp","Tech Solutions"]},"email":{"type":"string","description":"Search by email address. Supports partial matches.","title":"Email","default":null,"nullable":true,"examples":["john@company.com","@gmail.com","john"]},"fields":{"type":"string","description":"Comma-separated list of Contact fields to retrieve.","title":"Fields","default":"Id,Name,FirstName,LastName,Email,Phone,MobilePhone,Title,AccountId,Account.Name","examples":["Id,Name,Email,Phone","Id,Name,FirstName,LastName,Email,Title,AccountId,Account.Name,CreatedDate"]},"limit":{"type":"integer","description":"Maximum number of contacts to return.","title":"Limit","default":50,"minimum":1,"maximum":2000},"name":{"type":"string","description":"Search by contact name (first name, last name, or full name). Supports partial matches.","title":"Name","default":null,"nullable":true,"examples":["John Smith","Jane","Doe"]},"phone":{"type":"string","description":"Search by phone number. Supports partial matches.","title":"Phone","default":null,"nullable":true,"examples":["555-1234","(555)","1234"]},"title":{"type":"string","description":"Search by job title. Supports partial matches.","title":"Title","default":null,"nullable":true,"examples":["Manager","Director","Sales"]}},"title":"SearchContactsRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce SOQL query containing matching contacts or error information.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"SearchContactsResponseWrapper"}
+schema info of SALESFORCE_SEARCH_CONTACTS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_SEARCH_LEADS
+
+Here is the input and output schema info of Tool SALESFORCE_SEARCH_LEADS of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"company":{"type":"string","description":"Search by company name. Supports partial matches.","title":"Company","default":null,"nullable":true,"examples":["Acme Corp","Tech Solutions"]},"email":{"type":"string","description":"Search by email address. Supports partial matches.","title":"Email","default":null,"nullable":true,"examples":["john@company.com","@gmail.com","john"]},"fields":{"type":"string","description":"Comma-separated list of Lead fields to retrieve.","title":"Fields","default":"Id,Name,FirstName,LastName,Email,Phone,Title,Company,Status,LeadSource,CreatedDate","examples":["Id,Name,Email,Phone,Company,Status","Id,Name,FirstName,LastName,Email,Title,Company,Status,LeadSource,CreatedDate"]},"lead_source":{"type":"string","description":"Search by lead source.","title":"Lead Source","default":null,"nullable":true,"examples":["Web","Phone Inquiry","Partner Referral"]},"limit":{"type":"integer","description":"Maximum number of leads to return.","title":"Limit","default":50,"minimum":1,"maximum":2000},"name":{"type":"string","description":"Search by lead name (first name, last name, or full name). Supports partial matches.","title":"Name","default":null,"nullable":true,"examples":["John Smith","Jane","Doe"]},"phone":{"type":"string","description":"Search by phone number. Supports partial matches.","title":"Phone","default":null,"nullable":true,"examples":["555-1234","(555)","1234"]},"status":{"type":"string","description":"Search by lead status.","title":"Status","default":null,"nullable":true,"examples":["Open - Not Contacted","Working - Contacted","Closed - Converted"]},"title":{"type":"string","description":"Search by job title. Supports partial matches.","title":"Title","default":null,"nullable":true,"examples":["Manager","Director","Sales"]}},"title":"SearchLeadsRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce SOQL query containing matching leads or error information.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"SearchLeadsResponseWrapper"}
+schema info of SALESFORCE_SEARCH_LEADS ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_SEARCH_NOTES
+
+Here is the input and output schema info of Tool SALESFORCE_SEARCH_NOTES of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"body":{"type":"string","description":"Search within note body content. Supports partial matches.","title":"Body","default":null,"nullable":true,"examples":["discussed pricing","action items","next steps"]},"created_date_from":{"type":"string","description":"Search notes created from this date (YYYY-MM-DD).","title":"Created Date From","default":null,"nullable":true,"examples":["2024-01-01"]},"created_date_to":{"type":"string","description":"Search notes created before this date (YYYY-MM-DD).","title":"Created Date To","default":null,"nullable":true,"examples":["2024-12-31"]},"fields":{"type":"string","description":"Comma-separated list of Note fields to retrieve.","title":"Fields","default":"Id,Title,Body,ParentId,Parent.Name,OwnerId,Owner.Name,IsPrivate,CreatedDate,LastModifiedDate","examples":["Id,Title,Body,ParentId,Parent.Name,CreatedDate","Id,Title,Body,ParentId,Parent.Name,OwnerId,Owner.Name,IsPrivate"]},"is_private":{"type":"boolean","description":"Filter by private status. True for private notes, False for public notes.","title":"Is Private","default":null,"nullable":true},"limit":{"type":"integer","description":"Maximum number of notes to return.","title":"Limit","default":50,"minimum":1,"maximum":2000},"owner_name":{"type":"string","description":"Search by note owner name. Supports partial matches.","title":"Owner Name","default":null,"nullable":true,"examples":["John Smith","Jane"]},"parent_name":{"type":"string","description":"Search by parent record name (Account, Contact, etc.). Supports partial matches.","title":"Parent Name","default":null,"nullable":true,"examples":["Acme Corp","John Smith"]},"title":{"type":"string","description":"Search by note title. Supports partial matches.","title":"Title","default":null,"nullable":true,"examples":["Meeting Notes","Follow up","Important"]}},"title":"SearchNotesRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce SOQL query containing matching notes or error information.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"SearchNotesResponseWrapper"}
+schema info of SALESFORCE_SEARCH_NOTES ends.
+
+
+Mcp name: "Salesforce"
+Mcp id: "68e89e5ba2538bdc469f2052"
+Mcp url: "https://backend.composio.dev/v3/mcp/b2ce620a-17c9-46d7-9ae7-1c2396016dbf/mcp?user_id=696d07b01cfba27ebad50417"
+Schema info:
+Tool Name: SALESFORCE_SEARCH_OPPORTUNITIES
+
+Here is the input and output schema info of Tool SALESFORCE_SEARCH_OPPORTUNITIES of Mcp Salesforce (Mcp Id: 68e89e5ba2538bdc469f2052):
+inputSchema:
+{"type":"object","properties":{"account_name":{"type":"string","description":"Search by associated account name. Supports partial matches.","title":"Account Name","default":null,"nullable":true,"examples":["Acme Corp","Tech Solutions"]},"amount_max":{"type":"number","description":"Maximum opportunity amount.","title":"Amount Max","default":null,"nullable":true,"examples":[100000,1000000]},"amount_min":{"type":"number","description":"Minimum opportunity amount.","title":"Amount Min","default":null,"nullable":true,"examples":[1000,50000]},"close_date_from":{"type":"string","description":"Search opportunities with close date from this date. MUST use YYYY-MM-DD format only. Natural language phrases like 'this quarter' or 'next month' will cause SOQL syntax errors.","title":"Close Date From","default":null,"nullable":true,"examples":["2024-01-01","2024-06-15","2025-03-31"]},"close_date_to":{"type":"string","description":"Search opportunities with close date before this date. MUST use YYYY-MM-DD format only. Natural language phrases like 'this quarter' or 'end of year' will cause SOQL syntax errors.","title":"Close Date To","default":null,"nullable":true,"examples":["2024-12-31","2025-06-30","2025-09-30"]},"fields":{"type":"string","description":"Comma-separated list of Opportunity fields to retrieve.","title":"Fields","default":"Id,Name,AccountId,Account.Name,StageName,Amount,CloseDate,IsClosed,IsWon,Probability,LeadSource,CreatedDate","examples":["Id,Name,AccountId,Account.Name,StageName,Amount,CloseDate","Id,Name,AccountId,Account.Name,StageName,Amount,CloseDate,IsClosed,IsWon,Probability"]},"is_closed":{"type":"boolean","description":"Filter by closed status. True for closed opportunities, False for open.","title":"Is Closed","default":null,"nullable":true},"is_won":{"type":"boolean","description":"Filter by won status. True for won opportunities, False for lost (only applies to closed opportunities).","title":"Is Won","default":null,"nullable":true},"lead_source":{"type":"string","description":"Search by lead source.","title":"Lead Source","default":null,"nullable":true,"examples":["Web","Phone Inquiry","Partner Referral"]},"limit":{"type":"integer","description":"Maximum number of opportunities to return.","title":"Limit","default":50,"minimum":1,"maximum":2000},"name":{"type":"string","description":"Search by opportunity name. Supports partial matches.","title":"Name","default":null,"nullable":true,"examples":["Q4 Deal","Enterprise Sale","Renewal"]},"stage_name":{"type":"string","description":"Search by opportunity stage.","title":"Stage Name","default":null,"nullable":true,"examples":["Prospecting","Qualification","Proposal/Price Quote","Closed Won"]}},"title":"SearchOpportunitiesRequest"}
+outputSchema:
+{"type":"object","properties":{"data":{"type":"object","description":"Data from the action execution","title":"Data","properties":{"response_data":{"type":"object","description":"Raw JSON response from Salesforce SOQL query containing matching opportunities or error information.","title":"Response Data","nullable":true,"additionalProperties":true}},"required":["response_data"],"additionalProperties":false},"error":{"type":"string","description":"Error if any occurred during the execution of the action","title":"Error","default":null,"nullable":true},"successful":{"type":"boolean","description":"Whether or not the action execution was successful or not","title":"Successful"}},"required":["data","successful"],"title":"SearchOpportunitiesResponseWrapper"}
+schema info of SALESFORCE_SEARCH_OPPORTUNITIES ends.
