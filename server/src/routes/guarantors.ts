@@ -1,6 +1,6 @@
 
 import { Router } from 'express';
-import { guarantorController } from '../controllers/guarantor.controller';
+import { guarantorController } from '../controllers/guarantors.controller';
 import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
