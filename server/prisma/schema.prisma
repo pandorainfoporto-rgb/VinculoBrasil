@@ -17,6 +17,45 @@ datasource db {
 // AUTENTICACAO E USUARIOS
 // ============================================
 
+model Owner {
+  id              String    @id @default(uuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  cpfCnpj         String    @unique
+  rgIe            String?
+  birthDate       DateTime?
+  profession      String?
+  maritalStatus   String?
+
+  // Endereço
+  addressId       String?   @unique
+  address         Address?  @relation(fields: [addressId], references: [id])
+
+  // Financeiro
+  bankAccounts    BankAccount[] @relation("OwnerBankAccounts")
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Address {
+  id            String   @id @default(uuid())
+  street        String
+  number        String
+  complement    String?
+  neighborhood  String
+  city          String
+  state         String
+  zipCode       String
+  country       String?  @default("BR")
+
+  owner         Owner?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 model User {
   id                String    @id @default(uuid())
   email             String    @unique
@@ -70,6 +109,27 @@ model User {
   @@index([email])
   @@index([roleId])
   @@index([agencyId])
+
+
+  ownerProfile      Owner?
+
+  // Modulo Inquilinos
+  tenantProfile     Tenant?
+  guarantorProfile  Guarantor?
+  investorProfile   Investor?
+
+  // Modulo Contratos (Leases)
+  leasesAsTenant    Lease[]  @relation("LeaseTenant")
+  leasesAsOwner     Lease[]  @relation("LeaseOwner")
+  leasesAsGuarantor Lease[]  @relation("LeaseGuarantor")
+
+  // Modulo Financeiro
+  invoicesToPay     Invoice[]    @relation("InvoicePayer")
+  settlementsToReceive Settlement[] @relation("SettlementRecipient")
+
+  // Chamados (Tickets)
+  ticketsRequested  TenantTicket[]  @relation("TicketRequester")
+  ticketsAssigned   TenantTicket[]  @relation("TicketAssignee")
 }
 
 model Role {
@@ -331,6 +391,7 @@ model Property {
 
   // Contratos
   contracts       RentContract[]
+  leases          Lease[]         @relation("PropertyLeases")
 
   // ========== VÍNCULO ADS - Promoção e Destaque ==========
   isPromoted      Boolean         @default(false)
@@ -417,7 +478,7 @@ model RentContract {
   tenantPhone     String
 
   // Garantidores
-  guarantors      Guarantor[]
+  guarantors      ContractGuarantor[]
 
   // Dados do contrato
   status          ContractStatus      @default(DRAFT)
@@ -460,7 +521,7 @@ model RentContract {
   @@index([tenantCpf])
 }
 
-model Guarantor {
+model ContractGuarantor {
   id          String       @id @default(uuid())
   contractId  String
   contract    RentContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
@@ -1059,29 +1120,6 @@ model Campaign {
   @@index([type])
 }
 
-// ============================================
-// NOTIFICACOES E LOGS
-// ============================================
-
-model Notification {
-  id          String           @id @default(uuid())
-  userId      String
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  type        NotificationType
-  title       String
-  message     String
-  data        Json?
-
-  read        Boolean          @default(false)
-  readAt      DateTime?
-
-  createdAt   DateTime         @default(now())
-
-  @@index([userId])
-  @@index([read])
-}
-
 model AuditLog {
   id          String   @id @default(uuid())
   userId      String?
@@ -1433,17 +1471,6 @@ enum CampaignStatus {
   SENT
   PAUSED
   CANCELLED
-}
-
-enum NotificationType {
-  INFO
-  SUCCESS
-  WARNING
-  ERROR
-  PAYMENT
-  CONTRACT
-  MESSAGE
-  SYSTEM
 }
 
 // ============================================
@@ -2179,43 +2206,7 @@ enum P2PTransactionStatus {
 }
 
 // Investidor (Perfil de quem compra recebíveis)
-model Investor {
-  id                String          @id @default(uuid())
 
-  // Usuário base
-  userId            String          @unique
-  // user              User            @relation(fields: [userId], references: [id])
-
-  // Dados KYC
-  kycStatus         String          @default("PENDING") // PENDING | APPROVED | REJECTED
-  kycVerifiedAt     DateTime?
-  investorType      String          @default("PF") // PF | PJ | QUALIFIED
-
-  // Limites
-  monthlyLimit      Decimal?        @db.Decimal(12, 2) // Limite mensal de compra
-  totalInvested     Decimal         @default(0) @db.Decimal(12, 2) // Total já investido
-
-  // Carteira
-  primaryWallet     String?         // Carteira principal para recebimento
-  asaasWalletId     String?         // Subconta Asaas para receber splits
-
-  // Preferências
-  minTenantScore    Int?            // Score mínimo aceito do inquilino
-  maxDiscountPercent Decimal?       @db.Decimal(5, 2) // Deságio máximo aceito
-  preferredCities   String[]        // Cidades preferidas
-
-  // Estatísticas
-  totalPurchases    Int             @default(0)
-  totalReceived     Decimal         @default(0) @db.Decimal(12, 2)
-  averageYield      Decimal?        @db.Decimal(5, 2) // Rendimento médio
-
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-
-  @@index([userId])
-  @@index([kycStatus])
-  @@index([investorType])
-}
 
 // ============================================
 // INVESTMENT ORDER - Pedidos de Investimento
@@ -2345,14 +2336,15 @@ model Realtor {
   @@index([active])
 }
 
+
 model BankAccount {
   id                    String   @id @default(uuid())
 
   // Dados da Conta
   name                  String                           // Nome/apelido (ex: "Conta Operacional BB")
-  bankName              String                           // Nome do banco (ex: "Banco do Brasil")
-  agencyNumber          String                           // Número da agência bancária (ex: "0001")
-  accountNumber         String                           // Número da conta
+  bankName              String?                          // Nome do banco (ex: "Banco do Brasil")
+  agencyNumber          String?                          // Número da agência bancária (ex: "0001")
+  accountNumber         String?                          // Número da conta
   type                  BankAccountType                  // CHECKING, SAVINGS, GATEWAY
 
   // Saldo
@@ -2373,12 +2365,33 @@ model BankAccount {
 
   @@index([agencyId])
   @@index([active])
+
+  ownerId               String?
+  owner                 Owner?   @relation("OwnerBankAccounts", fields: [ownerId], references: [id])
+  @@index([ownerId])
 }
 
 enum BankAccountType {
   CHECKING              // Conta Corrente
   SAVINGS               // Conta Poupança
-  GATEWAY               // Conta Gateway de Pagamento (Asaas, etc)
+  GATEWAY               // Conta Gateway de Pagamento (Asaas, Stripe)
+  CASH                  // Caixa Físico (Pequeno Caixa)
+}
+
+model BankRegistry {
+  id        String   @id @default(uuid())
+  code      String   @unique // Código Febraban (001) ou Identificador (ASAAS)
+  name      String   // Nome do Banco / Instituição
+  isGateway Boolean  @default(false)
+  
+  logoUrl   String?
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([code])
+  @@index([isGateway])
 }
 
 model AccountsPayable {
@@ -2541,3 +2554,308 @@ enum CategoryNature {
   DEBIT                 // Natureza Devedora
   CREDIT                // Natureza Credora
 }
+
+// ============================================
+// MODULO INQUILINOS (TENANTS)
+// ============================================
+
+model Tenant {
+  id              String      @id @default(uuid())
+  
+  userId          String      @unique
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Financeiro
+  monthlyIncome   Decimal?    @db.Decimal(12, 2)
+  creditScore     Int?        // Score de crédito (0-1000)
+
+  // Status
+  status          TenantStatus @default(PENDING)
+
+  // Metadados
+  notes           String?     @db.Text
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([status])
+}
+
+enum TenantStatus {
+  ACTIVE
+  PENDING
+  BLOCKED
+  EVICTED
+}
+
+// ============================================
+// SUPORTE / CHAMADOS (TICKETS)
+// ============================================
+
+model TenantTicket {
+  id              String      @id @default(uuid())
+  
+  // Detalhes
+  title           String
+  description     String?     @db.Text
+  
+  // Status e Prioridade
+  status          TicketState    @default(OPEN)
+  priority        TicketLevel    @default(MEDIUM)
+
+  // Quem abriu (Inquilino, Proprietário, etc)
+  requesterId     String
+  requester       User           @relation("TicketRequester", fields: [requesterId], references: [id])
+
+  // Quem atende (Admin, Corretor)
+  assigneeId      String?
+  assignee        User?          @relation("TicketAssignee", fields: [assigneeId], references: [id])
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  closedAt        DateTime?
+
+  @@index([status])
+  @@index([priority])
+  @@index([requesterId])
+  @@index([assigneeId])
+}
+
+enum TicketState {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  CANCELLED
+}
+
+enum TicketLevel {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+
+
+// ============================================
+// MODULO GARANTIDORES (GUARANTORS)
+// ============================================
+
+model Guarantor {
+  id              String      @id @default(uuid())
+  userId          String      @unique
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Financeiro
+  totalCollateral Decimal     @default(0) @db.Decimal(12, 2)
+  availableLimit  Decimal     @default(0) @db.Decimal(12, 2)
+  blockedAmount   Decimal     @default(0) @db.Decimal(12, 2)
+
+  // Status e Perfil
+  kycStatus       GuarantorKYCStatus @default(PENDING)
+  investorProfile GuarantorProfile   @default(CONSERVATIVE)
+
+  // Metadados
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([kycStatus])
+}
+
+enum GuarantorKYCStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum GuarantorProfile {
+  CONSERVATIVE
+  MODERATE
+
+  AGGRESSIVE
+}
+
+// ============================================
+// MODULO INVESTIDORES (INVESTORS & VBRz)
+// ============================================
+
+model Investor {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // VBRz Tokenomics
+  vbrzBalance     Decimal  @default(0) @db.Decimal(12, 2)
+  walletAddress   String?  // Wallet On-Chain (EVM)
+
+  // Compliance & Metrics
+  kycLevel        Int      @default(1)
+  totalInvestedP2P Decimal @default(0) @db.Decimal(12, 2)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ============================================
+// MODULO CONTRATOS (LEASES)
+// ============================================
+
+enum OnChainStatus {
+  NOT_MINTED
+  MINTING
+  MINTED
+  BURNED
+}
+
+enum LeaseStatus {
+  DRAFT
+  ACTIVE
+  ENDED
+  EVICTION_IN_PROGRESS
+}
+
+model Lease {
+  id                String      @id @default(uuid())
+  
+  // Relationships
+  propertyId        String
+  property          Property    @relation("PropertyLeases", fields: [propertyId], references: [id])
+  tenantId          String
+  tenant            User        @relation("LeaseTenant", fields: [tenantId], references: [id])
+  ownerId           String
+  owner             User        @relation("LeaseOwner", fields: [ownerId], references: [id])
+  guarantorId       String?
+  guarantor         User?       @relation("LeaseGuarantor", fields: [guarantorId], references: [id])
+  
+  // Financial Snapshot (calculated from pricing service)
+  rentAmount        Decimal     @db.Decimal(12, 2)  // Total rent (tenant pays)
+  ownerNetValue     Decimal     @db.Decimal(12, 2)  // Owner receives
+  adminFeeValue     Decimal     @db.Decimal(12, 2)  // Platform revenue (15%)
+  
+  // Contract Terms
+  startDate         DateTime
+  endDate           DateTime
+  durationMonths    Int
+  paymentDay        Int         @default(10)
+  nextAdjustmentDate DateTime?
+  
+  // Blockchain (Web3)
+  smartContractAddress String?
+  tokenId           String?
+  onChainStatus     OnChainStatus @default(NOT_MINTED)
+  
+  // Status
+  status            LeaseStatus @default(DRAFT)
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  // Financial Records
+  invoices          Invoice[]
+}
+
+// ============================================
+// MODULO FATURAMENTO (BILLING)
+// ============================================
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELED
+}
+
+enum SettlementStatus {
+  SCHEDULED
+  PAID
+  HELD
+  CANCELED
+}
+
+model Invoice {
+  id                String        @id @default(uuid())
+  
+  // Origins
+  leaseId           String
+  lease             Lease         @relation(fields: [leaseId], references: [id])
+  payerId           String
+  payer             User          @relation("InvoicePayer", fields: [payerId], references: [id])
+  
+  // Values
+  amount            Decimal       @db.Decimal(12, 2)
+  adminFee          Decimal       @default(0) @db.Decimal(12, 2) // Fee retained by platform
+  netAmount         Decimal       @db.Decimal(12, 2) // Amount to be distributed (usually to owner)
+  
+  // Dates
+  dueDate           DateTime
+  paidAt            DateTime?
+  
+  // Payment Gateway (Asaas/Stripe)
+  gatewayId         String?       // ID externo
+  barcode           String?
+  paymentUrl        String?
+  
+  // Status
+  status            InvoiceStatus @default(PENDING)
+  
+  // Downstream
+  settlements       Settlement[]
+  
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model Settlement {
+  id                String           @id @default(uuid())
+  
+  // Source
+  invoiceId         String
+  invoice           Invoice          @relation(fields: [invoiceId], references: [id])
+  
+  // Recipient
+  recipientId       String
+  recipient         User             @relation("SettlementRecipient", fields: [recipientId], references: [id])
+  
+  // Values
+  amount            Decimal          @db.Decimal(12, 2)
+  
+  // Dates
+  scheduledDate     DateTime
+  paidAt            DateTime?
+  
+  // Status
+  status            SettlementStatus @default(SCHEDULED)
+  
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+// ============================================
+// MODULO NOTIFICAÇÕES
+// ============================================
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  
+  title     String
+  message   String
+  type      NotificationType @default(INFO)
+  read      Boolean          @default(false)
+  
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  
+  @@index([userId, read])
+}
+

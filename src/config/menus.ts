@@ -36,6 +36,7 @@ import {
   Store,
   Info,
   ChartPie,
+  Umbrella,
   type LucideIcon,
 } from "lucide-react";
 import type { MenuItem } from "../components/layouts/MainLayout";
@@ -82,19 +83,23 @@ export const superuserTabs: SidebarTab[] = [
       // Entidades
       { icon: Building2, label: "Imóveis", path: "/admin/properties" },
       { icon: Building2, label: "Imobiliárias", path: "/admin/agencies" },
-      { icon: Home, label: "Proprietários", path: "/admin/landlords" },
-      { icon: Key, label: "Inquilinos", path: "/admin/tenants" },
+      { icon: Users, label: "Proprietários", path: "/admin/owners" },
+      { icon: UserCheck, label: "Inquilinos", path: "/admin/tenants" },
       { icon: Shield, label: "Garantidores", path: "/admin/guarantors" },
       { icon: TrendingUp, label: "Investidores", path: "/admin/investors" },
-      { icon: FileCheck, label: "Seguradoras", path: "/admin/insurers" },
-      { icon: Users, label: "Corretores", path: "/admin/realtors" },
+      { icon: Umbrella, label: "Seguros", path: "/admin/insurers" },
+      { icon: Briefcase, label: "Corretores", path: "/admin/realtors" },
+      // Ferramentas
+      { icon: Calculator, label: "Simulador de Aluguel", path: "/admin/simulator" },
+      { icon: FileText, label: "Contratos", path: "/admin/leases" },
       // Financeiro (collapsible)
       {
         icon: PieChart,
         label: "Financeiro",
-        isCollapsible: true,
+        path: "/admin/finance",
         children: [
-          { icon: Banknote, label: "Caixa", path: "/admin/finance/cash" },
+          { icon: LayoutDashboard, label: "Dashboard", path: "/admin/finance" },
+          { icon: Banknote, label: "Fluxo de Caixa", path: "/admin/finance/cash" },
           { icon: CreditCard, label: "Contas Bancárias", path: "/admin/finance/banks" },
           { icon: Receipt, label: "A Pagar", path: "/admin/finance/payables" },
           { icon: FileSpreadsheet, label: "A Receber", path: "/admin/finance/receivables" },

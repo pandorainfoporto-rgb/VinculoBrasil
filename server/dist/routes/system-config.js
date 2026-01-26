@@ -9,6 +9,7 @@ import { AppError } from '../middleware/error-handler.js';
 import { logger } from '../lib/logger.js';
 import { getConfigsByGroup, getConfigGroups, updateConfig, upsertConfig, deleteConfig, clearConfigCache, getBlockchainConfig, } from '../services/config.service.js';
 import { clearP2PConfigCache } from '../services/p2p.service.js';
+import { getSystemSettings, updateSystemSettings, } from '../controllers/system-settings.controller.js';
 const router = Router();
 // ============================================
 // SCHEMAS DE VALIDAÇÃO
@@ -49,6 +50,19 @@ router.get('/public/blockchain', async (_req, res, next) => {
         next(error);
     }
 });
+// ============================================
+// ROTAS DE SYSTEM SETTINGS (Taxas e Comissões)
+// ============================================
+/**
+ * GET /api/system-config/settings
+ * Busca as configurações globais do sistema (taxas, comissões, etc.)
+ */
+router.get('/settings', getSystemSettings);
+/**
+ * PUT /api/system-config/settings
+ * Atualiza as configurações globais do sistema
+ */
+router.put('/settings', updateSystemSettings);
 // ============================================
 // ROTAS ADMINISTRATIVAS
 // ============================================

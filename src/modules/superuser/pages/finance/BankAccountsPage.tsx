@@ -211,11 +211,10 @@ export function BankAccountsPage() {
                           <TrendingDown size={14} className="text-red-600" />
                         )}
                         <span
-                          className={`text-lg font-bold ${
-                            account.balance >= 0
+                          className={`text-lg font-bold ${account.balance >= 0
                               ? "text-green-600 dark:text-green-400"
                               : "text-red-600 dark:text-red-400"
-                          }`}
+                            }`}
                         >
                           R$ {Math.abs(account.balance).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                         </span>
@@ -226,11 +225,10 @@ export function BankAccountsPage() {
                   {/* Status Badge */}
                   <div className="pt-2">
                     <span
-                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                        account.isActive
+                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${account.isActive
                           ? "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400"
                           : "bg-gray-100 text-gray-700 dark:bg-gray-900/20 dark:text-gray-400"
-                      }`}
+                        }`}
                     >
                       {account.isActive ? "Ativa" : "Inativa"}
                     </span>
@@ -264,8 +262,20 @@ function BankAccountForm({
     isActive: editingAccount?.isActive ?? true,
   });
 
+  // Fetch Bank Registry
+  const { data: bankRegistry = [] } = useQuery({
+    queryKey: ['bankRegistry', formData.accountType],
+    queryFn: () => financeService.getBankRegistry({
+      isGateway: formData.accountType === 'gateway'
+    }),
+    enabled: formData.accountType !== 'cash'
+  });
+
   const createMutation = useMutation({
-    mutationFn: (data: Partial<BankAccount>) => financeService.createBankAccount(data),
+    mutationFn: (data: Partial<BankAccount>) => financeService.createBankAccount({
+      ...data,
+      type: formData.accountType.toUpperCase() as any
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bankAccounts"] });
       toast.success("Conta criada com sucesso!");
@@ -278,7 +288,10 @@ function BankAccountForm({
 
   const updateMutation = useMutation({
     mutationFn: (data: Partial<BankAccount>) =>
-      financeService.updateBankAccount(editingAccount!.id, data),
+      financeService.updateBankAccount(editingAccount!.id, {
+        ...data,
+        type: formData.accountType.toUpperCase() as any
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bankAccounts"] });
       toast.success("Conta atualizada com sucesso!");
@@ -298,53 +311,11 @@ function BankAccountForm({
     }
   };
 
+  const isCash = formData.accountType === 'cash' as any; // Temporary cast to allow new type
+  const isGateway = formData.accountType === 'gateway' as any;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <Label htmlFor="name">Nome da Conta</Label>
-        <Input
-          id="name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="Ex: Conta Corrente Santander"
-          required
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="bank">Banco</Label>
-        <Input
-          id="bank"
-          value={formData.bank}
-          onChange={(e) => setFormData({ ...formData, bank: e.target.value })}
-          placeholder="Ex: Banco Santander"
-          required
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="agency">Agência</Label>
-          <Input
-            id="agency"
-            value={formData.agency}
-            onChange={(e) => setFormData({ ...formData, agency: e.target.value })}
-            placeholder="0001"
-            required
-          />
-        </div>
-        <div>
-          <Label htmlFor="accountNumber">Conta</Label>
-          <Input
-            id="accountNumber"
-            value={formData.accountNumber}
-            onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })}
-            placeholder="12345-6"
-            required
-          />
-        </div>
-      </div>
-
       <div>
         <Label htmlFor="accountType">Tipo de Conta</Label>
         <Select
@@ -355,15 +326,73 @@ function BankAccountForm({
             <SelectValue placeholder="Tipo de conta" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="checking">Corrente</SelectItem>
-            <SelectItem value="savings">Poupança</SelectItem>
-            <SelectItem value="investment">Gateway de Pagamento</SelectItem>
+            <SelectItem value="checking">Conta Corrente</SelectItem>
+            <SelectItem value="savings">Conta Poupança</SelectItem>
+            <SelectItem value="gateway">Gateway de Pagamento</SelectItem>
+            <SelectItem value="cash">Caixa Físico</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div>
-        <Label htmlFor="balance">Saldo Inicial (R$)</Label>
+        <Label htmlFor="name">Nome da Conta</Label>
+        <Input
+          id="name"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          placeholder={isCash ? "Ex: Caixinha do Escritório" : "Ex: Conta Principal"}
+          required
+        />
+      </div>
+
+      {!isCash && (
+        <div>
+          <Label htmlFor="bank">{isGateway ? "Instituição / Gateway" : "Banco"}</Label>
+          <Select
+            value={formData.bank}
+            onValueChange={(value) => setFormData({ ...formData, bank: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              {bankRegistry.map((bank: any) => (
+                <SelectItem key={bank.code} value={bank.name}>
+                  {bank.code} - {bank.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {!isCash && !isGateway && (
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="agency">Agência</Label>
+            <Input
+              id="agency"
+              value={formData.agency}
+              onChange={(e) => setFormData({ ...formData, agency: e.target.value })}
+              placeholder="0001"
+              required={!isCash}
+            />
+          </div>
+          <div>
+            <Label htmlFor="accountNumber">Conta</Label>
+            <Input
+              id="accountNumber"
+              value={formData.accountNumber}
+              onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })}
+              placeholder="12345-6"
+              required={!isCash}
+            />
+          </div>
+        </div>
+      )}
+
+      <div>
+        <Label htmlFor="balance">Saldo Atual (R$)</Label>
         <Input
           id="balance"
           type="number"
@@ -399,7 +428,7 @@ function BankAccountForm({
           ) : editingAccount ? (
             "Atualizar"
           ) : (
-            "Criar Conta"
+            "Salvar Conta"
           )}
         </Button>
       </div>

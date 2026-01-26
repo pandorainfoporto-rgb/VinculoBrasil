@@ -1,5 +1,10 @@
 import { type Request, type Response, type NextFunction } from 'express';
 /**
+ * GET /api/finance/bank-registry
+ * Lists all available banks and gateways
+ */
+export declare function listBankRegistry(req: Request, res: Response, next: NextFunction): Promise<void>;
+/**
  * POST /api/finance/payables
  * Creates a new account payable (conta a pagar)
  */

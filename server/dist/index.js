@@ -37,11 +37,18 @@ import agenciesRoutes from './routes/agencies.js';
 import publicAgenciesRoutes from './routes/public-agencies.js';
 import agencyOwnersRoutes from './routes/agency-owners.js';
 import agencyPropertiesRoutes from './routes/agency-properties.js';
+import realtorsRoutes from './routes/realtors.js';
 import integrationsRoutes from './routes/integrations.js';
 import inspectionsRoutes from './routes/inspections.js';
 import p2pRoutes from './routes/p2p.js';
 import systemConfigRoutes from './routes/system-config.js';
 import investRoutes from './routes/invest.js';
+import suppliersRoutes from './routes/suppliers.js';
+import categoriesRoutes from './routes/categories.js';
+import ownersRoutes from './routes/owners.js';
+import tenantsRoutes from './routes/tenants.js';
+import guarantorsRoutes from './routes/guarantors.js';
+import investorsRoutes from './routes/investors.js';
 // P2P Blockchain Event Listener
 import { startP2PEventListener } from './services/p2p.service.js';
 // Workers
@@ -58,14 +65,29 @@ app.use(helmet({
     contentSecurityPolicy: false, // Desabilitado para SPA
 }));
 // CORS - Libera acesso cross-origin para o frontend (DEVE SER PRIMEIRO!)
+// FASE 16: Configuração explícita para produção + desenvolvimento
 app.use(cors({
-    origin: '*', // Libera para todos (restringir em produção via CORS_ORIGIN)
+    origin: [
+        'https://www.vinculobrasil.com.br', // Produção principal
+        'https://vinculobrasil.com.br', // Produção sem www
+        'https://vinculo-brasil.vercel.app', // Vercel Preview/Production
+        'http://localhost:5173', // Dev Local (Vite)
+        'http://localhost:3000', // Dev Local (alternativo)
+        'http://localhost:4173', // Vite Preview
+    ],
+    credentials: true, // Permite envio de cookies/headers de auth
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    maxAge: 86400, // Cache preflight por 24h
 }));
 // Responder explicitamente a requisições OPTIONS (preflight)
 app.options('*', cors());
+// Debug de requisições para diagnosticar problemas de CORS/Auth (FASE 16)
+app.use((req, res, next) => {
+    logger.debug(`[REQUEST] ${req.method} ${req.path} | Origin: ${req.headers.origin || 'N/A'} | Auth: ${req.headers.authorization ? 'Present' : 'Missing'}`);
+    next();
+});
 // Compression
 app.use(compression());
 // Body parsing
@@ -210,9 +232,17 @@ app.use('/api/insurance', authMiddleware, insuranceRoutes);
 app.use('/api/agencies', authMiddleware, agenciesRoutes);
 app.use('/api/agency/owners', authMiddleware, agencyOwnersRoutes);
 app.use('/api/agency/properties', authMiddleware, agencyPropertiesRoutes);
+app.use('/api/agency/realtors', authMiddleware, realtorsRoutes);
 app.use('/api/admin/integrations', authMiddleware, integrationsRoutes);
 app.use('/api/inspections', authMiddleware, inspectionsRoutes);
 app.use('/api/system-config', authMiddleware, systemConfigRoutes);
+// Módulo Financeiro V2 - Fornecedores e Categorias
+app.use('/api/suppliers', authMiddleware, suppliersRoutes);
+app.use('/api/categories', authMiddleware, categoriesRoutes);
+app.use('/api/owners', authMiddleware, ownersRoutes);
+app.use('/api/tenants', authMiddleware, tenantsRoutes);
+app.use('/api/guarantors', authMiddleware, guarantorsRoutes);
+app.use('/api/investors', authMiddleware, investorsRoutes);
 // P2P Marketplace (Cessão de Crédito Digital)
 // Rotas públicas: GET /listings, GET /stats, POST /simulate
 // Rotas protegidas dentro do router

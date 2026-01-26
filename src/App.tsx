@@ -25,6 +25,16 @@ import { LoginPage } from "./modules/public/pages/LoginPage";
 import { SuperuserDashboard } from "./modules/superuser/pages/Dashboard";
 import { GlobalSettingsPage } from "./modules/superuser/pages/GlobalSettingsPage";
 import { AgenciesManagementPage } from "./modules/superuser/pages/AgenciesManagementPage";
+import { OwnersPage } from "./modules/superuser/pages/owners/OwnersPage";
+import { TenantsPage } from "./modules/admin/pages/tenants/TenantsPage";
+import { GuarantorsPage } from "./modules/admin/pages/guarantors/GuarantorsPage";
+import { InvestorsPage } from "./modules/admin/pages/investors/InvestorsPage";
+import { PricingSimulatorPage } from "./modules/admin/pages/financial/PricingSimulatorPage";
+import { PropertiesPage } from "./modules/admin/pages/properties/PropertiesPage";
+import { LeasesPage } from "./modules/admin/pages/leases/LeasesPage";
+import { NewLeasePage } from "./modules/admin/pages/leases/NewLeasePage";
+import { LeaseDetailsPage } from "./modules/admin/pages/leases/LeaseDetailsPage";
+import { FinancialDashboard } from "./modules/admin/pages/finance/FinancialDashboard";
 import { Web3DebugPage } from "./modules/superuser/pages/Web3DebugPage";
 import { FinancialPage } from "./modules/superuser/pages/FinancialPage";
 
@@ -49,7 +59,7 @@ import { VBRzMarketPage } from "./modules/superuser/pages/blockchain/VBRzMarketP
 
 // Páginas Agency
 import { AgencyDashboard } from "./modules/agency/pages/Dashboard";
-import { PropertiesPage } from "./modules/agency/pages/PropertiesPage";
+import { PropertiesPage as AgencyPropertiesPage } from "./modules/agency/pages/PropertiesPage";
 import { RealtorsPage } from "./modules/agency/pages/RealtorsPage";
 import { SplitCalculatorPage } from "./modules/agency/pages/SplitCalculatorPage";
 
@@ -106,17 +116,22 @@ export default function App() {
                   <Route path="bi" element={<SuperuserDashboard />} />
 
                   {/* Entidades (placeholder - uses Dashboard) */}
-                  <Route path="properties" element={<SuperuserDashboard />} />
+                  <Route path="properties" element={<PropertiesPage />} />
                   <Route path="agencies" element={<AgenciesManagementPage />} />
+                  <Route path="owners" element={<OwnersPage />} />
                   <Route path="landlords" element={<SuperuserDashboard />} />
-                  <Route path="tenants" element={<SuperuserDashboard />} />
-                  <Route path="guarantors" element={<SuperuserDashboard />} />
-                  <Route path="investors" element={<SuperuserDashboard />} />
+                  <Route path="tenants" element={<TenantsPage />} />
+                  <Route path="guarantors" element={<GuarantorsPage />} />
+                  <Route path="investors" element={<InvestorsPage />} />
                   <Route path="insurers" element={<SuperuserDashboard />} />
                   <Route path="realtors" element={<SuperuserDashboard />} />
 
                   {/* Financeiro */}
-                  <Route path="finance" element={<FinancialPage />} />
+                  <Route path="finance" element={<FinancialDashboard />} />
+                  <Route path="simulator" element={<PricingSimulatorPage />} />
+                  <Route path="leases" element={<LeasesPage />} />
+                  <Route path="leases/new" element={<NewLeasePage />} />
+                  <Route path="leases/:id" element={<LeaseDetailsPage />} />
                   <Route path="finance/cash" element={<CashFlowPage />} />
                   <Route path="finance/banks" element={<BankAccountsPage />} />
                   <Route path="finance/payables" element={<AccountsPayablePage />} />
@@ -173,7 +188,7 @@ export default function App() {
               >
                 <Routes>
                   <Route index element={<AgencyDashboard />} />
-                  <Route path="properties" element={<PropertiesPage />} />
+                  <Route path="properties" element={<AgencyPropertiesPage />} />
                   <Route path="realtors" element={<RealtorsPage />} />
                   <Route path="split-calculator" element={<SplitCalculatorPage />} />
                   <Route path="contracts" element={<AgencyDashboard />} />

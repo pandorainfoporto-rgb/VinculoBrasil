@@ -1,0 +1,1 @@
+{"version":3,"file":"investor.controller.d.ts","sourceRoot":"","sources":["../../src/controllers/investor.controller.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAsB5C,eAAO,MAAM,kBAAkB;gBACT,OAAO,OAAO,QAAQ;mBAcnB,OAAO,OAAO,QAAQ;kBAevB,OAAO,OAAO,QAAQ;kBActB,OAAO,OAAO,QAAQ;CAa7C,CAAC"}

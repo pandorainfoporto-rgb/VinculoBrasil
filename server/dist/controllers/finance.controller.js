@@ -5,6 +5,33 @@ import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { AppError } from '../middleware/error-handler.js';
 // ============================================
+// BANK REGISTRY (Bancos e Gateways)
+// ============================================
+/**
+ * GET /api/finance/bank-registry
+ * Lists all available banks and gateways
+ */
+export async function listBankRegistry(req, res, next) {
+    try {
+        const { isGateway } = req.query;
+        const where = { isActive: true };
+        if (isGateway !== undefined) {
+            where.isGateway = isGateway === 'true';
+        }
+        const banks = await prisma.bankRegistry.findMany({
+            where,
+            orderBy: { name: 'asc' },
+        });
+        res.json({
+            success: true,
+            data: banks,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+// ============================================
 // ACCOUNTS PAYABLE (Contas a Pagar)
 // ============================================
 /**
@@ -16,7 +43,7 @@ export async function createPayable(req, res, next) {
         const { description, amount, dueDate, supplierId, supplierName, category, barcode, isRecurring, recurrenceInterval, agencyId, notes, } = req.body;
         // Validation
         if (!description || !amount || !dueDate) {
-            throw new AppError('Missing required fields: description, amount, dueDate', 400);
+            throw new AppError(400, 'Missing required fields: description, amount, dueDate');
         }
         // Create payable
         const payable = await prisma.accountsPayable.create({
@@ -110,7 +137,7 @@ export async function payBill(req, res, next) {
             where: { id },
         });
         if (!existing) {
-            throw new AppError('Payable not found', 404);
+            throw new AppError(404, 'Payable not found');
         }
         // Update payable
         const payable = await prisma.accountsPayable.update({
@@ -152,7 +179,7 @@ export async function updatePayable(req, res, next) {
             where: { id },
         });
         if (!existing) {
-            throw new AppError('Payable not found', 404);
+            throw new AppError(404, 'Payable not found');
         }
         // Update payable
         const payable = await prisma.accountsPayable.update({
@@ -193,7 +220,7 @@ export async function deletePayable(req, res, next) {
             where: { id },
         });
         if (!existing) {
-            throw new AppError('Payable not found', 404);
+            throw new AppError(404, 'Payable not found');
         }
         // Delete payable
         await prisma.accountsPayable.delete({
@@ -221,7 +248,7 @@ export async function createReceivable(req, res, next) {
         const { description, amount, dueDate, origin, clientType, type, agencyId, notes, } = req.body;
         // Validation
         if (!description || !amount || !dueDate) {
-            throw new AppError('Missing required fields: description, amount, dueDate', 400);
+            throw new AppError(400, 'Missing required fields: description, amount, dueDate');
         }
         // Create receivable
         const receivable = await prisma.accountsReceivable.create({
@@ -295,7 +322,7 @@ export async function receivePayment(req, res, next) {
             where: { id },
         });
         if (!existing) {
-            throw new AppError('Receivable not found', 404);
+            throw new AppError(404, 'Receivable not found');
         }
         // Determine status based on received amount
         let status = 'PAID';
@@ -335,7 +362,7 @@ export async function updateReceivable(req, res, next) {
             where: { id },
         });
         if (!existing) {
-            throw new AppError('Receivable not found', 404);
+            throw new AppError(404, 'Receivable not found');
         }
         // Update receivable
         const receivable = await prisma.accountsReceivable.update({
@@ -368,7 +395,7 @@ export async function deleteReceivable(req, res, next) {
             where: { id },
         });
         if (!existing) {
-            throw new AppError('Receivable not found', 404);
+            throw new AppError(404, 'Receivable not found');
         }
         // Delete receivable
         await prisma.accountsReceivable.delete({
@@ -393,18 +420,33 @@ export async function deleteReceivable(req, res, next) {
  */
 export async function createBankAccount(req, res, next) {
     try {
-        const { name, bankName, agency, accountNumber, type, balance, agencyId, active, notes, } = req.body;
+        const { name, bankName, agency, // Frontend ainda envia 'agency', mas vamos salvar como 'agencyNumber'
+        accountNumber, type, balance, agencyId, active, notes, } = req.body;
         // Validation
-        if (!name || !bankName || !agency || !accountNumber || !type) {
-            throw new AppError('Missing required fields: name, bankName, agency, accountNumber, type', 400);
+        if (!name || !type) {
+            throw new AppError(400, 'Missing required fields: name, type');
+        }
+        if (type === 'CHECKING' || type === 'SAVINGS') {
+            if (!bankName || !agency || !accountNumber) {
+                throw new AppError(400, 'Missing required fields for bank account: bankName, agency, accountNumber');
+            }
+        }
+        else if (type === 'GATEWAY') {
+            if (!bankName) {
+                throw new AppError(400, 'Gateway name is required');
+            }
+            // Gateways valid logic can be expanded here
+        }
+        else if (type === 'CASH') {
+            // Cash doesn't need bank details
         }
         // Create bank account
         const bankAccount = await prisma.bankAccount.create({
             data: {
                 name,
-                bankName,
-                agency,
-                accountNumber,
+                bankName: type === 'CASH' ? null : bankName,
+                agencyNumber: type === 'CASH' ? null : agency, // Mapeado para agencyNumber no schema
+                accountNumber: type === 'CASH' ? null : accountNumber,
                 type,
                 balance: balance || 0,
                 agencyId,
@@ -464,7 +506,12 @@ export async function updateBankAccount(req, res, next) {
             where: { id },
         });
         if (!existing) {
-            throw new AppError('Bank account not found', 404);
+            throw new AppError(404, 'Bank account not found');
+        }
+        // Map 'agency' to 'agencyNumber' if present
+        if (updateData.agency) {
+            updateData.agencyNumber = updateData.agency;
+            delete updateData.agency;
         }
         // Update bank account
         const bankAccount = await prisma.bankAccount.update({
@@ -493,7 +540,7 @@ export async function deleteBankAccount(req, res, next) {
             where: { id },
         });
         if (!existing) {
-            throw new AppError('Bank account not found', 404);
+            throw new AppError(404, 'Bank account not found');
         }
         // Delete bank account
         await prisma.bankAccount.delete({

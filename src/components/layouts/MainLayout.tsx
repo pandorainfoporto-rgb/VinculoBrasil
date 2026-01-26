@@ -16,6 +16,7 @@ import {
   Link2Off,
 } from "lucide-react";
 import { TabbedSidebar } from "./TabbedSidebar";
+import { NotificationBell } from "../notifications/NotificationBell";
 import type { SidebarTab } from "../../config/menus";
 
 // ============================================
@@ -154,11 +155,10 @@ function SimpleNavigation({
           <Link
             key={item.path}
             to={item.path}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-              isActive
-                ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium shadow-sm"
-                : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200"
-            }`}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
+              ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium shadow-sm"
+              : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200"
+              }`}
             onClick={onItemClick}
           >
             <item.icon size={20} className={isActive ? "text-blue-600 dark:text-blue-400" : ""} />
@@ -220,12 +220,11 @@ export function MainLayout({ children, menuItems, tabs, title, subtitle }: MainL
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-72 bg-white dark:bg-[#1a1a1a] border-r border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-40 w-72 bg-white dark:bg-[#1a1a1a] border-r border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {/* Logo */}
-        <div className="h-20 flex items-center px-6 border-b border-gray-100 dark:border-gray-800">
+        <div className="h-20 flex items-center justify-between px-6 border-b border-gray-100 dark:border-gray-800">
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/30 transition-shadow">
               <span className="text-white font-bold text-xl">V</span>
@@ -235,6 +234,7 @@ export function MainLayout({ children, menuItems, tabs, title, subtitle }: MainL
               <p className="text-xs text-gray-500 dark:text-gray-400 -mt-0.5">Brasil</p>
             </div>
           </Link>
+          <NotificationBell />
         </div>
 
         {/* Module Title */}

@@ -33,6 +33,8 @@ import reportsRoutes from './routes/reports.js';
 import marketplaceRoutes from './routes/marketplace.js';
 import vouchersRoutes from './routes/vouchers.js';
 import financeRoutes from './routes/finance.js';
+import web3Routes from './routes/web3.js';
+import notificationRoutes from './routes/notifications.js';
 import servicesRoutes from './routes/services.js';
 import insuranceRoutes from './routes/insurance.js';
 import agenciesRoutes from './routes/agencies.js';
@@ -46,7 +48,15 @@ import p2pRoutes from './routes/p2p.js';
 import systemConfigRoutes from './routes/system-config.js';
 import investRoutes from './routes/invest.js';
 import suppliersRoutes from './routes/suppliers.js';
+
 import categoriesRoutes from './routes/categories.js';
+import ownersRoutes from './routes/owners.js';
+import tenantsRoutes from './routes/tenants.js';
+import guarantorsRoutes from "./routes/guarantors.js";
+import investorsRoutes from "./routes/investors.js";
+import pricingRoutes from "./routes/pricing.js";
+import leasesRoutes from "./routes/leases.js";
+
 
 // P2P Blockchain Event Listener
 import { startP2PEventListener } from './services/p2p.service.js';
@@ -266,6 +276,15 @@ app.use('/api/system-config', authMiddleware, systemConfigRoutes);
 // Módulo Financeiro V2 - Fornecedores e Categorias
 app.use('/api/suppliers', authMiddleware, suppliersRoutes);
 app.use('/api/categories', authMiddleware, categoriesRoutes);
+app.use('/api/owners', authMiddleware, ownersRoutes);
+app.use('/api/tenants', authMiddleware, tenantsRoutes);
+app.use('/api/guarantors', authMiddleware, guarantorsRoutes);
+app.use('/api/investors', authMiddleware, investorsRoutes);
+app.use("/api/pricing", authMiddleware, pricingRoutes);
+app.use("/api/leases", authMiddleware, leasesRoutes);
+app.use("/api/finance", authMiddleware, financeRoutes);
+app.use("/api/web3", authMiddleware, web3Routes);
+app.use("/api/notifications", authMiddleware, notificationRoutes);
 
 // P2P Marketplace (Cessão de Crédito Digital)
 // Rotas públicas: GET /listings, GET /stats, POST /simulate

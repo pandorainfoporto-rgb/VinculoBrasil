@@ -10,7 +10,9 @@ createReceivable, listReceivables, receivePayment, updateReceivable, deleteRecei
 // Bank Accounts
 createBankAccount, listBankAccounts, updateBankAccount, deleteBankAccount, 
 // Dashboard
-getFinancialSummary, } from '../controllers/finance.controller.js';
+getFinancialSummary, 
+// Bank Registry
+listBankRegistry, } from '../controllers/finance.controller.js';
 const router = Router();
 // ============================================
 // ACCOUNTS PAYABLE (Contas a Pagar)
@@ -41,6 +43,8 @@ router.delete('/receivables/:id', deleteReceivable);
 // ============================================
 // BANK ACCOUNTS (Contas Bancárias)
 // ============================================
+// List Bank Registry (Available Banks)
+router.get('/bank-registry', listBankRegistry);
 // Create bank account
 router.post('/bank-accounts', createBankAccount);
 // List bank accounts
