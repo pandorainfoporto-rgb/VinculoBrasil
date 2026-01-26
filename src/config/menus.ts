@@ -37,6 +37,21 @@ import {
   Info,
   ChartPie,
   Umbrella,
+  // Additional icons for new menu structure
+  ArrowUpRight,
+  ArrowDownLeft,
+  Image,
+  Handshake,
+  Link,
+  Cloud,
+  FileCode,
+  Megaphone,
+  Ticket,
+  Plug,
+  Palette,
+  Globe,
+  Database,
+  Tag,
   type LucideIcon,
 } from "lucide-react";
 import type { MenuItem } from "../components/layouts/MainLayout";
@@ -64,100 +79,122 @@ export interface SidebarTab {
 // SUPERUSER MENU - ESTRUTURA TABULADA
 // ============================================
 
-export const superuserTabs: SidebarTab[] = [
+export const adminTabs: SidebarTab[] = [
   {
-    id: "principal",
-    icon: Home,
-    label: "Principal",
+    id: "dashboards",
+    icon: LayoutDashboard,
+    label: "Dashboards",
     items: [
-      // Dashboards (collapsible)
-      {
-        icon: LayoutDashboard,
-        label: "Dashboards",
-        isCollapsible: true,
-        children: [
-          { icon: LayoutDashboard, label: "Visão Geral", path: "/admin" },
-          { icon: BarChart3, label: "BI & Analytics", path: "/admin/bi" },
-        ],
-      },
-      // Entidades
-      { icon: Building2, label: "Imóveis", path: "/admin/properties" },
-      { icon: Building2, label: "Imobiliárias", path: "/admin/agencies" },
-      { icon: Users, label: "Proprietários", path: "/admin/owners" },
-      { icon: UserCheck, label: "Inquilinos", path: "/admin/tenants" },
-      { icon: Shield, label: "Garantidores", path: "/admin/guarantors" },
-      { icon: TrendingUp, label: "Investidores", path: "/admin/investors" },
-      { icon: Umbrella, label: "Seguros", path: "/admin/insurers" },
-      { icon: Briefcase, label: "Corretores", path: "/admin/realtors" },
-      // Ferramentas
-      { icon: Calculator, label: "Simulador de Aluguel", path: "/admin/simulator" },
+      { icon: LayoutDashboard, label: "Geral", path: "/admin" },
+      { icon: Receipt, label: "Faturamento", path: "/admin/finance" },
+      { icon: ArrowUpRight, label: "A Pagar", path: "/admin/finance/payables" },
+      { icon: ArrowDownLeft, label: "A Receber", path: "/admin/finance/receivables" },
       { icon: FileText, label: "Contratos", path: "/admin/leases" },
-      // Financeiro (collapsible)
-      {
-        icon: PieChart,
-        label: "Financeiro",
-        path: "/admin/finance",
-        children: [
-          { icon: LayoutDashboard, label: "Dashboard", path: "/admin/finance" },
-          { icon: Banknote, label: "Fluxo de Caixa", path: "/admin/finance/cash" },
-          { icon: CreditCard, label: "Contas Bancárias", path: "/admin/finance/banks" },
-          { icon: Receipt, label: "A Pagar", path: "/admin/finance/payables" },
-          { icon: FileSpreadsheet, label: "A Receber", path: "/admin/finance/receivables" },
-          { icon: Factory, label: "Fornecedores", path: "/admin/finance/suppliers" },
-          { icon: ChartPie, label: "Plano de Contas (DRE)", path: "/admin/finance/dre" },
-        ],
-      },
-      // Antecipações & Blockchain
-      { icon: Coins, label: "Antecipações", path: "/admin/anticipations" },
-      { icon: Cpu, label: "Blockchain", path: "/admin/blockchain" },
-      { icon: Boxes, label: "VBRz", path: "/admin/vbrz" },
-      { icon: Store, label: "Mercado VBRz", path: "/admin/vbrz-market" },
-      // Omnichannel (collapsible)
-      {
-        icon: MessageSquare,
-        label: "Omnichannel",
-        isCollapsible: true,
-        children: [
-          { icon: MessageSquare, label: "Canais", path: "/admin/channels" },
-          { icon: Users, label: "CRM", path: "/admin/crm" },
-          { icon: Bot, label: "IA Agents", path: "/admin/ai-agents" },
-        ],
-      },
-    ],
+      { icon: Shield, label: "Seguros", path: "/admin/insurance" },
+      { icon: Building2, label: "Imóveis", path: "/admin/properties" },
+      { icon: Users, label: "Inquilinos", path: "/admin/tenants" },
+      { icon: TrendingUp, label: "Investimentos", path: "/admin/investments" },
+      { icon: Coins, label: "VBRz", path: "/admin/vbrz" },
+      { icon: Image, label: "NFTs", path: "/admin/nfts" },
+    ]
   },
   {
-    id: "relatorios",
-    icon: BarChart3,
-    label: "Relatórios",
+    id: "cadastro",
+    icon: Database,
+    label: "Cadastro / Financeiro",
     items: [
-      { icon: BarChart3, label: "BI Geral", path: "/admin/reports/bi" },
-      { icon: PieChart, label: "DRE Consolidado", path: "/admin/reports/dre" },
-      { icon: TrendingUp, label: "Performance", path: "/admin/reports/performance" },
-      { icon: FileSpreadsheet, label: "Extrato Geral", path: "/admin/reports/statements" },
-    ],
+      { icon: Wallet, label: "Caixa", path: "/admin/finance/cash" },
+      { icon: ChartPie, label: "DRE", path: "/admin/finance/dre" },
+      { icon: Tag, label: "Tipos de Despesa", path: "/admin/expense-types" },
+    ]
+  },
+  {
+    id: "gerenciamento",
+    icon: Users,
+    label: "Gerenciamento",
+    items: [
+      { icon: Building2, label: "Imóveis", path: "/admin/properties" },
+      { icon: UserCheck, label: "Inquilinos", path: "/admin/tenants" },
+      { icon: Home, label: "Proprietários", path: "/admin/landlords" },
+      { icon: Shield, label: "Garantidores", path: "/admin/guarantors" },
+      { icon: TrendingUp, label: "Investidores", path: "/admin/investors" },
+    ]
+  },
+  {
+    id: "imobiliaria",
+    icon: Briefcase,
+    label: "Imobiliária (B2B)",
+    items: [
+      { icon: Building2, label: "Imobiliárias Parceiras", path: "/admin/agencies" },
+      { icon: Users, label: "Corretores", path: "/admin/realtors" },
+      { icon: Globe, label: "Sites B2B", path: "/admin/b2b-sites" },
+    ]
+  },
+  {
+    id: "seguradoras",
+    icon: Umbrella,
+    label: "Seguradoras",
+    items: [
+      { icon: Shield, label: "Seguradoras", path: "/admin/insurers" },
+      { icon: Users, label: "Associações", path: "/admin/associations" },
+    ]
+  },
+  {
+    id: "balcao",
+    icon: Store,
+    label: "Balcão de Negócios",
+    items: [
+      { icon: Handshake, label: "Investimentos P2P", path: "/admin/p2p" },
+      { icon: ShoppingCart, label: "Vendas VBRz", path: "/admin/vbrz-market" },
+    ]
+  },
+  {
+    id: "crypto",
+    icon: Cpu,
+    label: "Crypto & Web3",
+    items: [
+      { icon: Link, label: "Blockchain", path: "/admin/blockchain" },
+      { icon: Image, label: "NFTs", path: "/admin/nfts" },
+      { icon: Wallet, label: "Carteira VBRz", path: "/admin/vbrz-wallet" },
+    ]
+  },
+  {
+    id: "cashback",
+    icon: Gift,
+    label: "Cashback",
+    items: [
+      { icon: Store, label: "Parceiros", path: "/admin/cashback-partners" },
+      { icon: DollarSign, label: "Distribuição", path: "/admin/cashback-distribution" },
+      { icon: Megaphone, label: "Campanhas", path: "/admin/campaigns" },
+      { icon: Ticket, label: "Vouchers", path: "/admin/vouchers" },
+    ]
   },
   {
     id: "config",
     icon: Settings,
     label: "Configurações",
     items: [
-      { icon: Settings, label: "Splits & Taxas", path: "/admin/settings" },
-      { icon: Scale, label: "Mediação", path: "/admin/mediation" },
-      { icon: Bug, label: "Web3 Debug", path: "/admin/web3-debug" },
-      { icon: UserCheck, label: "Permissões", path: "/admin/permissions" },
-    ],
-  },
-  {
-    id: "sobre",
-    icon: Info,
-    label: "Sobre",
-    items: [
-      { icon: Info, label: "Versão do Sistema", path: "/admin/about" },
-      { icon: FileText, label: "Changelog", path: "/admin/changelog" },
-      { icon: Bug, label: "Reportar Bug", path: "/admin/report-bug" },
-    ],
-  },
+      {
+        icon: Plug,
+        label: "Integrações",
+        isCollapsible: true,
+        children: [
+          { icon: Key, label: "API Keys", path: "/admin/settings/api-keys" },
+          { icon: FileCode, label: "Smart Contracts", path: "/admin/settings/contracts" },
+          { icon: Cloud, label: "Pinata IPFS", path: "/admin/settings/pinata" },
+          { icon: Wallet, label: "Wallets", path: "/admin/settings/wallets" },
+          { icon: MessageSquare, label: "Meta (WhatsApp)", path: "/admin/settings/meta" },
+          { icon: Bot, label: "OpenAI", path: "/admin/settings/openai" },
+        ]
+      },
+      { icon: Users, label: "Usuários do Sistema", path: "/admin/users" },
+      { icon: Palette, label: "Meu Site", path: "/admin/whitelabel" },
+    ]
+  }
 ];
+
+// Keep superuserTabs for backward compatibility
+export const superuserTabs: SidebarTab[] = adminTabs;
 
 // ============================================
 // MENUS SIMPLES (MANTIDOS PARA OUTROS MÓDULOS)
