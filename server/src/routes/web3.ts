@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { web3Controller } from '../controllers/web3.controller';
-import { authMiddleware } from '../middleware/auth';
+import { web3Controller } from '../controllers/web3.controller.js';
+import { authMiddleware } from '../middleware/auth.js';
 
 const router = Router();
 

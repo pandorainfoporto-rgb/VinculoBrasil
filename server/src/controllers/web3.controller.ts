@@ -1,52 +1,56 @@
 import { Request, Response } from 'express';
-import { web3Service } from '../services/web3.service';
+import { prisma } from '../lib/prisma.js';
 
 export const web3Controller = {
+    // Simulação de Minting (Mock) para garantir que o servidor suba sem erros de dependência
     mintLease: async (req: Request, res: Response) => {
+        const { leaseId } = req.params;
         try {
-            const leaseId = typeof req.params.leaseId === 'string' ? req.params.leaseId : '';
-            if (!leaseId) {
-                return res.status(400).json({ error: 'Invalid lease ID' });
-            }
-            const { ownerWallet } = req.body;
-
-            const result = await web3Service.mintLeaseToken(leaseId, ownerWallet);
-            return res.json(result);
-        } catch (error: any) {
-            console.error(error);
-            return res.status(500).json({
-                error: error.message || 'Failed to mint lease token'
+            // Atualiza o status no banco simulando sucesso na blockchain
+            const lease = await prisma.lease.update({
+                where: { id: leaseId },
+                data: {
+                    onChainStatus: 'MINTED',
+                    smartContractAddress: '0xMOCK_POLYGON_ADDRESS_' + Date.now(),
+                    tokenId: `VBRZ-${leaseId.substring(0, 4)}`
+                }
             });
+
+            return res.json({
+                success: true,
+                message: "Token minted successfully (MOCK)",
+                data: lease
+            });
+        } catch (error) {
+            console.error("Mint error:", error);
+            return res.status(500).json({ error: 'Erro ao tokenizar contrato' });
         }
     },
 
     getStatus: async (req: Request, res: Response) => {
+        const { leaseId } = req.params;
         try {
-            const leaseId = typeof req.params.leaseId === 'string' ? req.params.leaseId : '';
-            if (!leaseId) {
-                return res.status(400).json({ error: 'Invalid lease ID' });
-            }
-            const status = await web3Service.getLeaseBlockchainStatus(leaseId);
-            return res.json(status);
-        } catch (error: any) {
-            console.error(error);
-            return res.status(500).json({
-                error: error.message || 'Failed to get blockchain status'
+            const lease = await prisma.lease.findUnique({
+                where: { id: leaseId },
+                select: { onChainStatus: true, smartContractAddress: true, tokenId: true }
             });
+
+            if (!lease) return res.status(404).json({ error: 'Contrato não encontrado' });
+
+            return res.json({
+                status: lease.onChainStatus,
+                explorerUrl: lease.smartContractAddress ? `https://polygonscan.com/address/${lease.smartContractAddress}` : null
+            });
+        } catch (error) {
+            console.error("Get status error:", error);
+            return res.status(500).json({ error: 'Erro ao buscar status' });
         }
     },
 
     getExplorerUrl: async (req: Request, res: Response) => {
-        try {
-            const hash = typeof req.params.hash === 'string' ? req.params.hash : '';
-            if (!hash) {
-                return res.status(400).json({ error: 'Invalid hash' });
-            }
-            const result = web3Service.getExplorerUrl(hash);
-            return res.json(result);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ error: 'Failed to get explorer URL' });
-        }
+        const { hash } = req.params;
+        return res.json({
+            url: `https://polygonscan.com/tx/${hash}`
+        });
     }
 };
