@@ -1,18 +1,22 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
+// Criar Garantidor
 export const create = async (req: Request, res: Response) => {
   try {
     const data = req.body;
+    // Cria usuário com role GUARANTOR
     const guarantor = await prisma.user.create({
-      data: { ...data, role: 'GUARANTOR' } // Assume User model
+      data: { ...data, role: 'GUARANTOR' }
     });
     return res.status(201).json(guarantor);
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ error: 'Erro ao criar garantidor' });
   }
 };
 
+// Listar Garantidores
 export const list = async (req: Request, res: Response) => {
   try {
     const guarantors = await prisma.user.findMany({
@@ -24,6 +28,7 @@ export const list = async (req: Request, res: Response) => {
   }
 };
 
+// Buscar por ID
 export const getById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -35,6 +40,7 @@ export const getById = async (req: Request, res: Response) => {
   }
 };
 
+// Atualizar
 export const update = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -48,6 +54,7 @@ export const update = async (req: Request, res: Response) => {
   }
 };
 
+// Remover
 export const remove = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
