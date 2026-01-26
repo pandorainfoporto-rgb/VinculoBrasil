@@ -26,3 +26,6 @@ export const update = async (req: Request, res: Response) => {
 export const remove = async (req: Request, res: Response) => {
   return res.json({ message: 'Not implemented yet' });
 };
+// Fix deploy railway - forçando update
+import { Request, Response } from 'express';
+// ... resto do código
